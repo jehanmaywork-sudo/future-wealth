@@ -3275,4 +3275,81 @@ const t=document.querySelector('.fw-unlock-float');if(t)el.appendChild(t);
 })();
 </script>
 
+
+<!-- Future Wealth Final: Save Image feature -->
+<style id="fwSaveImageStyles">
+.fw-save-image-btn{
+  border:2px solid #20243A!important;
+  background:#C8FF4D!important;
+  color:#20243A!important;
+  border-radius:12px!important;
+  padding:12px 16px!important;
+  font-weight:900!important;
+  box-shadow:3px 3px 0 #20243A!important;
+  cursor:pointer!important;
+}
+.fw-plan-card-image{
+  position:fixed;
+  left:-9999px;
+  top:0;
+  width:700px;
+  padding:40px;
+  background:#FFFDF8;
+  border:3px solid #20243A;
+  border-radius:28px;
+  color:#20243A;
+  font-family:Arial,sans-serif;
+}
+.fw-plan-card-image h2{
+  font-family:Georgia,serif;
+  font-size:42px;
+  margin:0 0 20px;
+}
+.fw-plan-line{
+  display:flex;
+  justify-content:space-between;
+  padding:14px 0;
+  border-bottom:1px solid #ddd;
+  font-weight:800;
+}
+</style>
+<script id="fwSaveImageLogic">
+(function(){
+function makePlanCard(){
+  const card=document.createElement('div');
+  card.className='fw-plan-card-image';
+  const data=JSON.parse(localStorage.getItem('futureWealthPlan')||'{}');
+  const name=localStorage.getItem('futureWealthNickname')||'';
+  card.innerHTML=`
+    <h2>✦ FUTURE WEALTH ✦</h2>
+    <h3>PAYDAY PLAN COMPLETE</h3>
+    <p>Hey ${name || 'there'} ✦<br>You gave your money a purpose.</p>
+    <div class="fw-plan-line"><span>💰 Payday</span><span>${data.payday||'—'}</span></div>
+    <div class="fw-plan-line"><span>🏠 Essentials</span><span>${data.bills||'—'}</span></div>
+    <div class="fw-plan-line"><span>🌱 Future You</span><span>${data.savings||'—'}</span></div>
+    <div class="fw-plan-line"><span>✨ Goals</span><span>${data.goals||'—'}</span></div>
+    <div class="fw-plan-line"><span>💙 Room for You</span><span>${data.room||'—'}</span></div>
+    <p style="margin-top:25px;font-size:13px">🔒 Your money stays with you.<br>Future Wealth is a planning tool. No money was moved.</p>`;
+  document.body.appendChild(card);
+  return card;
+}
+window.fwSavePlanImage=function(){
+  const card=makePlanCard();
+  if(window.html2canvas){
+    html2canvas(card).then(canvas=>{
+      const a=document.createElement('a');
+      a.download='future-wealth-plan.png';
+      a.href=canvas.toDataURL('image/png');
+      a.click();
+      card.remove();
+    });
+  }else{
+    alert('Save Image is ready. Add html2canvas to enable PNG download.');
+    card.remove();
+  }
+};
+})();
+</script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
 </body></html>
