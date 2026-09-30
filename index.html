@@ -439,122 +439,238 @@ input,textarea,select{box-shadow:none!important}
 
 
 
-<style id="fwRobloxInspiredV29">
-/* FUTURE WEALTH — GAME WORLD VISUALS
-   V29 structure and interaction flow remain the foundation. */
+
+
+
+<style id="fwRobloxWorldDesign">
 :root{
-  --fw-bg:#FFF7E8;--fw-ink:#20243A;--fw-lime:#C8FF4D;
-  --fw-blue:#83D9FF;--fw-coral:#FF9C7A;--fw-purple:#B8A7FF;
-  --fw-white:#FFFFFF;--fw-shadow:#20243A;
+  --bg:#FFF7E8;--ink:#20243A;--lime:#C8FF4D;--blue:#83D9FF;
+  --coral:#FF9C7A;--purple:#B8A7FF;--white:#FFFDF8;--muted:#707384;
+  --shadow:#20243A;
 }
-html,body{background:var(--fw-bg)!important;color:var(--fw-ink)!important}
-body{font-family:Arial,sans-serif!important}
+*{box-sizing:border-box}
+body{background:var(--bg)!important;color:var(--ink)!important;font-family:Arial,sans-serif!important}
+.app{
+  max-width:980px!important;min-height:100vh!important;margin:auto!important;
+  padding:30px 42px 125px!important;background:var(--bg)!important;
+}
+.profilebar{
+  background:var(--white)!important;border:2px solid var(--ink)!important;
+  border-radius:14px!important;padding:10px 13px!important;
+  box-shadow:4px 4px 0 var(--ink)!important;
+}
+.avatar{
+  background:var(--purple)!important;color:var(--ink)!important;
+  border:2px solid var(--ink)!important;border-radius:9px!important;
+  box-shadow:2px 2px 0 var(--ink)!important;
+}
+.logout{border:0!important;background:transparent!important;color:var(--muted)!important}
 
-/* Game-world surfaces */
-.card,.panel,.box,.goal-card,.bill-card,.stat-card,.section-card,.note-card,
-[class*="card"],[class*="panel"]{
-  border:2px solid var(--fw-ink)!important;
-  border-radius:14px!important;
-  box-shadow:5px 5px 0 var(--fw-shadow)!important;
-}
-
-/* Buttons: chunky, tactile game controls */
-button,.btn,.cta,[role="button"]{
-  border-radius:9px!important;
-  border:2px solid var(--fw-ink)!important;
-  font-weight:800!important;
-  transition:transform .12s ease,box-shadow .12s ease!important;
-}
-button:hover,.btn:hover,.cta:hover,[role="button"]:hover{
-  transform:translateY(-2px)!important;
-}
-button:active,.btn:active,.cta:active,[role="button"]:active{
-  transform:translate(3px,3px)!important;
-  box-shadow:1px 1px 0 var(--fw-ink)!important;
-}
-
-/* Main actions */
-button[type="submit"],.primary,.primary-btn,.cta-primary,.continue,.next,
-.start-btn,.save-btn,.confirm-btn{
-  background:var(--fw-ink)!important;color:#fff!important;
-  box-shadow:3px 3px 0 #111426!important;
-}
-.secondary,.ghost,.cancel-btn{
-  background:var(--fw-white)!important;color:var(--fw-ink)!important;
-  box-shadow:3px 3px 0 var(--fw-ink)!important;
-}
-
-/* Inputs remain friendly and clear */
-input,textarea,select{
-  border:2px solid var(--fw-ink)!important;
-  border-radius:10px!important;
-  background:#fff!important;color:var(--fw-ink)!important;
-  box-shadow:2px 2px 0 rgba(32,36,58,.18)!important;
-}
-input:focus,textarea:focus,select:focus{
-  outline:3px solid rgba(184,167,255,.45)!important;
-}
-
-/* Category color language */
-.bill,.bills,.expense,.expense-card,[class*="bill"]{--accent:var(--fw-coral)}
-.saving,.savings,.safety,[class*="saving"]{--accent:var(--fw-blue)}
-.goal,.dream,.dreams,[class*="goal"],[class*="dream"]{--accent:var(--fw-purple)}
-.complete,.completed,.paid,.unlocked{--accent:var(--fw-lime)}
-
-/* Give common accent-bearing elements a game color without forcing every card. */
-.bill .icon,.bills .icon,.expense .icon{background:var(--fw-coral)!important}
-.saving .icon,.savings .icon,.safety .icon{background:var(--fw-blue)!important}
-.goal .icon,.dream .icon,.dreams .icon{background:var(--fw-purple)!important}
-.complete .icon,.completed .icon,.paid .icon,.unlocked .icon{background:var(--fw-lime)!important}
-
-/* Progress becomes an unlock meter */
-.progress,.progress-bar,.meter,.goal-progress{
-  background:#E7E3D8!important;border-radius:999px!important;overflow:hidden!important;
-}
-.progress-fill,.progress-bar-fill,.meter-fill,.goal-progress-fill{
-  background:var(--fw-lime)!important;border-right:2px solid var(--fw-ink)!important;
-}
-
-/* Navigation keeps its existing order/labels, but feels like a game HUD. */
-nav,.navbar,.top-nav,.bottom-nav{
-  border-color:var(--fw-ink)!important;
-}
-nav a,.nav-item,.tab,.bottomnav a,.bottom-nav a{
-  border-radius:9px!important;
-  transition:background .12s ease,transform .12s ease!important;
-}
-nav a:hover,.nav-item:hover,.tab:hover,.bottomnav a:hover,.bottom-nav a:hover{
-  background:var(--fw-purple)!important;
-  transform:translateY(-1px)!important;
-}
-
-/* Landing/welcome areas get a subtle game-grid world, not a busy illustration. */
-.hero,.hero-section,.welcome,.landing,.intro,.onboarding{
-  background-color:var(--fw-bg)!important;
-  background-image:
-    linear-gradient(rgba(32,36,58,.045) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(32,36,58,.045) 1px,transparent 1px)!important;
+/* HERO = the player's home world */
+.hero{
+  position:relative!important;margin-top:25px!important;padding:42px!important;
+  min-height:400px!important;border:2px solid var(--ink)!important;border-radius:22px!important;
+  overflow:hidden!important;background:var(--blue)!important;
+  box-shadow:8px 8px 0 var(--ink)!important;
+  background-image:linear-gradient(rgba(32,36,58,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(32,36,58,.045) 1px,transparent 1px)!important;
   background-size:28px 28px!important;
 }
+.hero:before{
+  content:"";position:absolute;right:7%;top:14%;width:230px;height:230px;
+  background:var(--lime);border:3px solid var(--ink);border-radius:22px;
+  transform:rotate(7deg);box-shadow:9px 9px 0 var(--ink);
+}
+.hero:after{
+  content:"✦";position:absolute;right:15%;top:22%;font-size:76px;font-weight:900;
+  color:var(--ink);z-index:1;transform:rotate(7deg);
+}
+.hero>*{position:relative;z-index:2}
+.hero .eyebrow:first-child{
+  display:inline-block;background:var(--ink);color:#fff;padding:8px 10px;
+  border-radius:7px;font-size:9px;letter-spacing:.16em;
+}
+.hero #personalGreeting{font-size:11px!important;margin-top:16px!important;color:var(--ink)!important;font-weight:900!important}
+.hero h1{
+  max-width:620px!important;font-family:Arial,sans-serif!important;
+  font-weight:1000!important;font-size:clamp(48px,6vw,78px)!important;
+  line-height:.92!important;letter-spacing:-.065em!important;margin:10px 0 15px!important;
+}
+.hero>.sub{max-width:530px!important;color:#4F5D67!important}
+.balance{
+  font-family:Arial,sans-serif!important;font-weight:1000!important;
+  font-size:54px!important;letter-spacing:-.055em!important;margin-top:25px!important;
+}
+.payday-card{
+  margin-top:26px!important;background:var(--white)!important;
+  border:2px solid var(--ink)!important;border-radius:15px!important;
+  box-shadow:5px 5px 0 var(--ink)!important;padding:17px!important;max-width:690px!important;
+}
+.payday-card .primary{background:var(--ink)!important;border:2px solid var(--ink)!important;box-shadow:3px 3px 0 #111426!important}
+.journey{height:10px!important;background:#E6E1D4!important;border:2px solid var(--ink)!important;border-radius:99px!important}
+.journey-fill{background:var(--lime)!important}
 
-/* Decorative game blocks for major existing sections when supported by markup */
-.hero:after,.welcome:after{
-  content:"";
-  position:absolute;
-  width:72px;height:72px;
-  right:7%;top:16%;
-  background:var(--fw-lime);
-  border:2px solid var(--fw-ink);
-  border-radius:12px;
-  box-shadow:6px 6px 0 var(--fw-ink);
-  transform:rotate(7deg);
-  pointer-events:none;
-  opacity:.9;
+/* Section framing */
+.section{margin-top:54px!important}
+.section>.eyebrow{font-size:8px!important;font-weight:1000!important;letter-spacing:.18em!important;color:#7B7D89!important}
+.section h2{font-family:Arial,sans-serif!important;font-weight:1000!important;font-size:34px!important;letter-spacing:-.055em!important;margin:4px 0 18px!important}
+
+/* Money resources */
+.grid{grid-template-columns:repeat(4,1fr)!important;gap:12px!important}
+.bucket{
+  position:relative!important;min-height:150px!important;padding:17px!important;
+  border:2px solid var(--ink)!important;border-radius:15px!important;
+  box-shadow:5px 5px 0 var(--ink)!important;background:var(--white)!important;
+}
+.bucket .icon{
+  display:grid!important;place-items:center!important;width:36px!important;height:36px!important;
+  border:2px solid var(--ink)!important;border-radius:9px!important;font-size:15px!important;
+  background:var(--purple)!important;color:var(--ink)!important;
+}
+.bucket .amount{font-size:27px!important;font-weight:1000!important;letter-spacing:-.04em!important;margin-top:25px!important}
+.bucket .label{font-size:10px!important;color:#555A6A!important;font-weight:700!important}
+.bucket.planned{background:var(--coral)!important}.bucket.savings{background:var(--blue)!important}
+.bucket.enjoy{background:var(--purple)!important}.bucket.available{background:var(--lime)!important}
+.bucket.planned .icon{background:#FFB79E!important}.bucket.savings .icon{background:#B6E9FF!important}
+.bucket.enjoy .icon{background:#D4C8FF!important}.bucket.available .icon{background:#E4FF9A!important}
+.guide{
+  margin-top:16px!important;background:var(--ink)!important;color:#fff!important;
+  border:2px solid var(--ink)!important;border-radius:15px!important;
+  box-shadow:5px 5px 0 #111426!important;padding:19px!important;
+}
+.guide-head{color:var(--lime)!important;font-weight:1000!important}
+.guide p{color:#F1F0EA!important}.guide .linkbtn{color:var(--lime)!important}
+
+/* Foundation */
+.foundation{
+  background:var(--blue)!important;border:2px solid var(--ink)!important;
+  border-radius:15px!important;box-shadow:5px 5px 0 var(--ink)!important;padding:19px!important;
+}
+.foundation strong{font-size:28px!important;font-weight:1000!important}
+
+/* DREAM BUILDS: actual game panels */
+.goals{grid-template-columns:1fr 1fr!important;gap:18px!important}
+.goal{
+  min-height:430px!important;padding:0!important;display:flex!important;
+  justify-content:flex-end!important;background:var(--purple)!important;
+  color:var(--ink)!important;border:2px solid var(--ink)!important;
+  border-radius:18px!important;box-shadow:6px 6px 0 var(--ink)!important;
+  overflow:hidden!important;
+}
+.goal.aircon{background:var(--blue)!important}
+.goal:before{display:none!important}
+.goal>*:not(.fw-goal-art){position:relative;z-index:4}
+.goal .tag{margin:0 20px!important;font-size:8px!important;letter-spacing:.15em!important;font-weight:1000!important}
+.goal h3{
+  font-family:Arial,sans-serif!important;font-size:31px!important;font-weight:1000!important;
+  letter-spacing:-.05em!important;margin:4px 20px!important;
+}
+.goal .money{margin:0 20px!important;font-size:13px!important;font-weight:900!important}
+.goal .caption{margin:5px 20px 0!important;color:#4F5365!important;font-size:11px!important}
+.startline{height:9px!important;margin:14px 20px 0!important;background:#E5E2D8!important;border:2px solid var(--ink)!important}
+.fill{background:var(--lime)!important;border-right:2px solid var(--ink)!important}
+.startlabels{margin:6px 20px 18px!important;color:#666978!important;font-size:8px!important;font-weight:900!important}
+
+/* Puzzle image area */
+.fw-goal-art{
+  position:absolute!important;left:0!important;right:0!important;top:0!important;height:255px!important;
+  overflow:hidden!important;background:linear-gradient(135deg,#B8A7FF,#83D9FF)!important;
+  border-bottom:2px solid var(--ink)!important;z-index:1!important;
+}
+.goal.aircon .fw-goal-art{background:linear-gradient(135deg,#83D9FF,#C8FF4D)!important}
+.fw-goal-art.has-photo{background:#ddd!important}
+.fw-goal-photo{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  object-fit:cover!important;z-index:1!important;
+}
+.fw-puzzle-grid{
+  position:absolute!important;inset:0!important;z-index:3!important;
+  display:grid!important;grid-template-columns:repeat(5,1fr)!important;
+  grid-template-rows:repeat(4,1fr)!important;
+}
+.fw-puzzle-piece{
+  position:relative!important;border:1px solid rgba(32,36,58,.55)!important;
+  background:rgba(32,36,58,.70)!important;
+  transition:opacity .45s ease,transform .45s ease,background .45s ease!important;
+}
+.fw-puzzle-piece:after{
+  content:"";position:absolute;inset:4px;border:1px dashed rgba(255,255,255,.35);border-radius:4px;
+}
+.fw-puzzle-piece.unlocked{background:transparent!important;border-color:rgba(255,255,255,.7)!important}
+.fw-puzzle-piece.unlocked:after{display:none}
+.fw-build-badge{
+  position:absolute;z-index:5;left:14px;top:14px;background:var(--white);
+  border:2px solid var(--ink);border-radius:8px;padding:7px 9px;
+  font-size:8px;font-weight:1000;letter-spacing:.1em;box-shadow:3px 3px 0 var(--ink);
+}
+.fw-upload-btn{
+  position:absolute;z-index:6;right:14px;top:14px;border:2px solid var(--ink)!important;
+  background:var(--lime)!important;color:var(--ink)!important;border-radius:8px!important;
+  padding:7px 9px!important;font-size:8px!important;font-weight:1000!important;
+  box-shadow:3px 3px 0 var(--ink)!important;
+}
+.fw-upload-input{display:none!important}
+.fw-unlock-note{
+  position:absolute;z-index:6;left:50%;bottom:12px;transform:translateX(-50%);
+  white-space:nowrap;background:var(--ink);color:#fff;border-radius:99px;padding:7px 10px;
+  font-size:8px;font-weight:900;letter-spacing:.05em;
 }
 
-/* Keep text readable and remove accidental over-decoration. */
-.hero p,.welcome p,.landing p{max-width:620px}
-h1,h2,h3{letter-spacing:-.045em!important}
+/* Payday sheets retain original flow but use the game world */
+.overlay{background:rgba(32,36,58,.45)!important}
+.sheet{
+  border:2px solid var(--ink)!important;background:var(--bg)!important;
+  box-shadow:8px 0 0 var(--ink)!important;
+}
+.sheet h2{font-family:Arial,sans-serif!important;font-weight:1000!important;letter-spacing:-.05em!important}
+.remaining-card{background:var(--ink)!important;border:2px solid var(--ink)!important;box-shadow:5px 5px 0 #111426!important}
+.suggestion{background:var(--purple)!important;border:2px solid var(--ink)!important;box-shadow:4px 4px 0 var(--ink)!important}
+.notice{background:var(--blue)!important;border:2px solid var(--ink)!important}
+
+/* Bottom navigation: same labels/order, game HUD treatment */
+.nav{
+  width:min(980px,calc(100% - 24px))!important;
+  background:var(--white)!important;border:2px solid var(--ink)!important;
+  border-radius:16px 16px 0 0!important;padding:9px 12px 13px!important;
+  box-shadow:0 -4px 0 var(--ink)!important;
+}
+.nav button{
+  border:0!important;border-radius:8px!important;color:#77798A!important;font-size:10px!important;
+}
+.nav button.active{background:var(--lime)!important;color:var(--ink)!important;font-weight:1000!important;box-shadow:2px 2px 0 var(--ink)!important}
+
+/* Make auth/welcome look like the same game world without changing the login flow */
+.tester-entry,.auth-screen{background:var(--bg)!important}
+.tester-entry-card,.auth-card{
+  border:2px solid var(--ink)!important;border-radius:20px!important;
+  box-shadow:8px 8px 0 var(--ink)!important;background:var(--white)!important;
+}
+.fw-sticker{
+  background:var(--lime)!important;color:var(--ink)!important;
+  border:2px solid var(--ink)!important;box-shadow:3px 3px 0 var(--ink)!important;
+  border-radius:8px!important;
+}
+.brandmark{background:var(--ink)!important;color:var(--lime)!important;border:2px solid var(--ink)!important}
+.privacy{background:var(--blue)!important;border:2px solid var(--ink)!important;border-radius:10px!important}
+
+/* Laptop-first, still responsive */
+@media(min-width:700px){
+  body{padding:0!important}
+  .app{border:0!important;border-radius:0!important;box-shadow:none!important}
+}
+@media(max-width:900px){
+  .app{padding:22px 20px 110px!important}
+  .hero{padding:30px 24px!important}
+  .hero:before{width:150px;height:150px;right:-25px;top:22%}
+  .hero:after{right:8%;top:30%;font-size:52px}
+  .grid{grid-template-columns:1fr 1fr!important}
+  .goals{grid-template-columns:1fr!important}
+}
+@media(max-width:560px){
+  .grid{grid-template-columns:1fr 1fr!important}
+  .bucket{min-height:120px}
+  .bucket .amount{font-size:21px!important}
+  .goal{min-height:400px!important}
+}
 </style>
 
 </head>
@@ -1141,6 +1257,64 @@ function fwEditGoal(btn){
 function fwAddGoal(){
   alert('Goal creator is ready for the next build — Japan and Aircon are restored first so you can test the complete direction.');
 }
+</script>
+
+
+<script id="fwPuzzleVisuals">
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.goal').forEach((goal)=>{
+    if(goal.querySelector('.fw-goal-art')) return;
+    const title=goal.querySelector('h3')?.textContent?.replace(/[^\w\s]/g,'').trim()||'Dream';
+    const art=document.createElement('div');
+    art.className='fw-goal-art';
+    art.innerHTML=`
+      <div class="fw-build-badge">DREAM BUILD</div>
+      <button type="button" class="fw-upload-btn">UPLOAD PHOTO</button>
+      <input class="fw-upload-input" type="file" accept="image/*">
+      <div class="fw-puzzle-grid"></div>
+      <div class="fw-unlock-note">SAVE TO UNLOCK PIECES</div>`;
+    const grid=art.querySelector('.fw-puzzle-grid');
+    for(let i=0;i<20;i++){
+      const piece=document.createElement('i');
+      piece.className='fw-puzzle-piece';
+      piece.dataset.index=i;
+      grid.appendChild(piece);
+    }
+    goal.prepend(art);
+
+    const upload=art.querySelector('.fw-upload-btn');
+    const input=art.querySelector('.fw-upload-input');
+    upload.addEventListener('click',()=>input.click());
+    input.addEventListener('change',()=>{
+      const file=input.files?.[0]; if(!file)return;
+      const url=URL.createObjectURL(file);
+      let img=art.querySelector('.fw-goal-photo');
+      if(!img){img=document.createElement('img');img.className='fw-goal-photo';art.prepend(img);}
+      img.src=url; art.classList.add('has-photo');
+      upload.textContent='CHANGE PHOTO';
+      updatePuzzle(goal);
+    });
+    updatePuzzle(goal);
+  });
+
+  function updatePuzzle(goal){
+    const fill=goal.querySelector('.fill');
+    const width=fill ? parseFloat(getComputedStyle(fill).width) : 0;
+    const track=fill?.parentElement?.clientWidth||1;
+    const pct=Math.max(0,Math.min(100,(width/track)*100));
+    const open=Math.round(pct/5);
+    goal.querySelectorAll('.fw-puzzle-piece').forEach((p,i)=>{
+      p.classList.toggle('unlocked',i<open);
+    });
+    const note=goal.querySelector('.fw-unlock-note');
+    if(note) note.textContent=pct>=100?'BUILD COMPLETE ✦':'SAVE TO UNLOCK PIECES';
+  }
+
+  // Existing V29 JavaScript changes .fill widths dynamically. Observe them without replacing that logic.
+  const observer=new MutationObserver(()=>document.querySelectorAll('.goal').forEach(updatePuzzle));
+  document.querySelectorAll('.fill').forEach(el=>observer.observe(el,{attributes:true,attributeFilter:['style','class']}));
+  window.addEventListener('resize',()=>document.querySelectorAll('.goal').forEach(updatePuzzle));
+});
 </script>
 
 </body></html>
