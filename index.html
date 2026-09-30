@@ -2206,6 +2206,97 @@ document.addEventListener('DOMContentLoaded',function(){
 .goal-hint span{max-width:620px}
 </style>
 
+
+<style id="fwGoalEditorFinalFix">
+#goalEditor{
+  position:fixed!important;
+  inset:0!important;
+  display:none;
+  align-items:flex-end!important;
+  justify-content:center!important;
+  z-index:100000!important;
+  pointer-events:auto!important;
+}
+#goalEditor .sheet{
+  position:relative!important;
+  z-index:100001!important;
+  pointer-events:auto!important;
+  width:min(520px,100%)!important;
+}
+#goalEditor input,#goalEditor button{
+  position:relative;
+  z-index:100002;
+  pointer-events:auto!important;
+}
+</style>
+
+
+<style id="fwMoneyMindButtonFix">
+#notesPage button,
+.fw-note-actions button{
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  position:relative;
+  z-index:5;
+}
+</style>
+<style id="fwGoalStateFix">
+.fw-goal-plan-input .gIn:focus{outline:2px solid rgba(115,216,178,.35);outline-offset:1px}
+.goal-hint strong{display:block;color:#edf4fb;margin-bottom:2px}
+</style>
+
+<style id="fwFinalGoalPolish">
+.goal-funding-note{
+  margin-top:8px;
+  color:#8fa4b7;
+  font:600 11px/1.45 Inter,Arial,sans-serif;
+}
+</style>
+
+
+<style id="fwMoneyMindAdvicePlan">
+.fw-mind-next{
+  margin-top:14px;padding:14px 15px;border:1px solid rgba(121,220,183,.32);
+  border-radius:16px;background:rgba(121,220,183,.07);
+}
+.fw-mind-next b{display:block;margin-bottom:5px}
+.fw-mind-next p{margin:0;color:#91a6b8;line-height:1.45}
+.fw-mind-next-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.fw-mind-next-actions button{
+  border:1px solid #8bd9bd;background:transparent;color:#8bd9bd;
+  border-radius:10px;padding:8px 11px;font:700 11px Inter,Arial,sans-serif;cursor:pointer
+}
+.fw-mind-advice{
+  margin-top:10px;padding:12px 13px;border-radius:13px;
+  background:#16283c;color:#dce8f2
+}
+</style>
+
+
+<style id="fwMoneyMindReminder">
+.fw-mind-reminder{
+  margin-top:10px;padding:12px 13px;border:1px solid #d7e1e8;
+  border-radius:14px;background:#fff;
+}
+.fw-mind-reminder .row{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;
+}
+.fw-mind-reminder input{
+  min-width:145px;flex:1;border:1px solid #ccd8e1;border-radius:9px;padding:8px;
+}
+.fw-mind-reminder button{
+  border:1px solid #8bd9bd;background:transparent;color:#3d9275;
+  border-radius:9px;padding:8px 10px;font:700 11px Inter,Arial,sans-serif;cursor:pointer;
+}
+</style>
+
+
+<style id="fwFinalAdvisorDistinction">
+.fw-advisor-role{
+  margin-top:6px;color:#91a4b5;font:600 11px/1.45 Inter,Arial,sans-serif;
+}
+</style>
+
 </head>
 <body>
 
@@ -2418,16 +2509,45 @@ function openExpenseEditor(){expenseChecks.innerHTML=catalog.map(([n,i])=>`<labe
 function closeExpenseEditor(){expenseEditor.style.display='none'}
 function saveExpenseOptions(){let s=[...document.querySelectorAll('#expenseChecks input:checked')].map(x=>x.value);const c=customExpense.value.trim();if(c&&!s.includes(c)){s.push(c);customIcons[c]=chosenExpenseIcon;}selected=s;customExpense.value='';closeExpenseEditor();renderExpenses();updateRemainder()}
 function buildSuggestion(){
- const days=Math.max(1,daysUntilPayday());
- if(remainder<=0){suggestion={save:0,enjoy:0,air:0,japan:0,available:0};advisorLead.textContent='This paycheck took care of life. That still counts as progress.';whyPlan.textContent='Your goals have not disappeared. We can look at them again when your next paycheck arrives.';suggestGrid.innerHTML='';return}
- let available,sav,enjoy,air,japan;
- if(remainder<2000){available=Math.round(remainder*.75);sav=Math.round(remainder*.15);enjoy=remainder-available-sav;air=0;japan=0}
- else {available=Math.round(remainder*.45);sav=Math.round(remainder*.25);enjoy=Math.round(remainder*.12);air=Math.round(remainder*.12);japan=remainder-available-sav-enjoy-air}
- suggestion={save:sav,enjoy,air,japan,available};
- advisorLead.textContent=`You have ${peso(remainder)} after expenses and ${days} day${days===1?'':'s'} until payday. Here’s one balanced starting point — not a rule.`;
- suggestGrid.innerHTML=[['🛟 Savings',sav],['☕ Enjoy',enjoy],['❄️ Aircon',air],['🇯🇵 Japan',japan],['💵 Keep available',available]].map(x=>`<div class="suggest-chip">${x[0]}<b>${peso(x[1])}</b></div>`).join('');
- whyPlan.textContent=`Why: it keeps breathing room for the next ${days} day${days===1?'':'s'}, builds some security, leaves room to enjoy life, and keeps your goals moving. You can change every amount.`;
+  const days=Math.max(1,daysUntilPayday());
+  if(remainder<=0){
+    suggestion={save:0,enjoy:0,goals:{},available:0};
+    advisorLead.textContent='This paycheck took care of life. That still counts as progress.';
+    whyPlan.textContent='There is nothing left to assign right now. That is information, not a failure.';
+    suggestGrid.innerHTML='';
+    return;
+  }
+
+  // Money Guide is an adviser, not an automatic allocator.
+  // It never invents goals and never assigns money to goals the user did not create.
+  const activeGoals=(window.fwGetUserGoals ? window.fwGetUserGoals() : []);
+  const daysText=`${days} day${days===1?'':'s'}`;
+  const breathing=Math.round(remainder*.25);
+  const room=Math.round(remainder*.15);
+  const unplanned=Math.max(0,remainder-breathing-room);
+  suggestion={save:breathing,enjoy:room,goals:{},available:unplanned};
+
+  advisorLead.textContent=`You have ${peso(remainder)} after expenses and ${daysText} until payday. Here’s what I’d look at first — not a rule.`;
+
+  const chips=[
+    ['🛟 Breathing room',breathing],
+    ['☕ Room for You',room],
+    ['💵 Unplanned for',unplanned]
+  ];
+
+  if(activeGoals.length){
+    activeGoals.forEach(g=>{
+      chips.push([g.name,0]);
+    });
+  }
+
+  suggestGrid.innerHTML=chips.map(x=>`<div class="suggest-chip">${x[0]}<b>${x[1] ? peso(x[1]) : 'Choose if you want'}</b></div>`).join('');
+
+  whyPlan.textContent=activeGoals.length
+    ? 'You have goals available, but I won’t decide what to put toward them for you. Choose an amount only if it feels right, and you can change it before saving.'
+    : 'You do not have a goal yet, so I will not invent one. You can add a goal if there is something you want this payday to help build — or leave that part open.';
 }
+
 function continueToPlan(){
   updateRemainder();
   if(val('income')<=0){alert('Enter your paycheck first.');return}
@@ -2785,7 +2905,7 @@ function fwAddGoal(){
     alert('Goal creator could not be opened.');
     return;
   }
-  ['goalName','goalTarget','goalSaved'].forEach(function(id){
+  ['goalName','goalTarget'].forEach(function(id){
     const el=document.getElementById(id);
     if(el) el.value='';
   });
@@ -2995,8 +3115,8 @@ snap();draw();
   <div class="eyebrow">New goal</div><h2>What are you working toward?</h2>
   <div class="sub">Anything you want. You decide the name and the amount.</div>
   <div class="field"><label>Goal name</label><input id="goalName" placeholder="e.g. New laptop, Emergency fund"></div>
-  <div class="row"><div class="field"><label>Target amount</label><input id="goalTarget" type="number" placeholder="e.g. 20000"></div><div class="field"><label>Already saved (optional)</label><input id="goalSaved" type="number" placeholder="0"></div></div>
-  <div class="sheet-actions"><button class="primary" onclick="saveGoal()">Add goal</button><button class="secondary" onclick="document.getElementById('goalEditor').style.display='none'">Cancel</button></div>
+  <div class="row"><div class="field"><label>Target amount</label><input id="goalTarget" type="number" placeholder="e.g. 20000"></div></div>
+  <div class="sheet-actions"><button class="primary" onclick="saveGoal()">Add goal</button><button class="secondary" type="button" onclick="document.getElementById('goalEditor').style.display='none';document.getElementById('goalEditor').setAttribute('aria-hidden','true')">Cancel</button></div>
 </div></div>
 <script id="fwDynamicGoals">
 (function(){
@@ -3005,7 +3125,24 @@ const K=()=>'fw_goals_'+USER();
 const esc=t=>String(t).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
 const P=n=>'₱'+Math.round(n).toLocaleString('en-PH');
 let goals=[];
-const load=()=>{try{goals=JSON.parse(localStorage.getItem(K())||'[]')}catch(e){goals=[]}};
+const load=()=>{
+  try{
+    const raw=localStorage.getItem(K())||'[]';
+    goals=JSON.parse(raw);
+    if(!Array.isArray(goals)) goals=[];
+
+    // Earlier prototype builds seeded demo goals. Remove those unless the
+    // user explicitly created them in the current goal system.
+    goals=goals.filter(g=>{
+      const name=String(g?.name||'').trim().toLowerCase();
+      if(name==='aircon' || name==='japan'){
+        return localStorage.getItem('fw_user_created_goal_'+name)==='1';
+      }
+      return true;
+    });
+    localStorage.setItem(K(),JSON.stringify(goals));
+  }catch(e){goals=[]}
+};
 const store=()=>{try{localStorage.setItem(K(),JSON.stringify(goals));return true}catch(e){alert('This photo could not be saved in this browser. Try a smaller photo.');return false}};
 function goalCard(x,i){
   const pct=Math.min(100,Math.round((Number(x.saved)||0)/Math.max(1,Number(x.target)||1)*100));
@@ -3016,11 +3153,11 @@ function goalCard(x,i){
     <div class="goal-body"><div class="goal-top"><div><span class="goal-kicker">${done?'COMPLETED BUILD':'YOUR GOAL'}</span><h3>${esc(x.name)}</h3></div><button class="goal-edit" onclick="editGoalI(${i})">Edit</button></div>
     <div class="goal-money"><strong>${P(x.saved)}</strong><span>of ${P(x.target)}</span></div>
     <div class="goal-track"><i style="width:${pct}%"></i></div>
-    <div class="goal-foot"><span>${done?'100% complete ✦':pct+'% there'}</span>${done?`<button onclick="deleteGoalI(${i})">Remove</button>`:`<button onclick="fundGoalI(${i})">Add money</button>`}</div></div></article>`;
+    <div class="goal-foot"><span>${done?'100% complete ✦':pct+'% there'}</span>${done?`<button onclick="deleteGoalI(${i})">Remove</button>`:`<button onclick="planGoalI(${i})">Plan it from payday →</button>`}</div></div></article>`;
 }
 function drawGoals(){
   const g=document.getElementById('goalGrid');if(!g)return;
-  if(!goals.length){g.innerHTML=`<div class="goals-empty" onclick="fwAddGoal()"><div class="ghosts"><i>＋</i><i></i><i></i></div><b>Your first goal goes here</b>Pick something you’re excited about. You choose the name and the amount.</div>`}
+  if(!goals.length){g.innerHTML=`<div class="goals-empty" onclick="fwAddGoal()"><div class="ghosts"><i>＋</i><i></i><i></i></div><b>Your first goal goes here</b>Pick something you’re excited about. You choose the name and the amount. It stays here until you complete or remove it.</div>`}
   else{
     const active=[],done=[];goals.forEach((x,i)=>((Number(x.saved)||0)>=Math.max(1,Number(x.target)||1)?done:active).push([x,i]));
     g.innerHTML=active.map(([x,i])=>goalCard(x,i)).join('')+
@@ -3029,10 +3166,45 @@ function drawGoals(){
   try{window.fwRefreshGoalPuzzles&&window.fwRefreshGoalPuzzles()}catch(e){}
   drawPlanGoals();
 }
-window.fwAddGoal=function(){['goalName','goalTarget','goalSaved'].forEach(i=>document.getElementById(i).value='');document.getElementById('goalEditor').style.display='flex'};
-window.saveGoal=function(){const n=document.getElementById('goalName').value.trim(),t=Number(document.getElementById('goalTarget').value),s=Number(document.getElementById('goalSaved').value)||0;
+window.fwAddGoal=function(){
+  const editor=document.getElementById('goalEditor');
+  if(!editor)return;
+  if(editor.parentElement!==document.body) document.body.appendChild(editor);
+  ['goalName','goalTarget'].forEach(i=>{
+    const el=document.getElementById(i);
+    if(el)el.value='';
+  });
+  editor.style.display='flex';
+  editor.style.visibility='visible';
+  editor.style.pointerEvents='auto';
+  editor.setAttribute('aria-hidden','false');
+  setTimeout(()=>document.getElementById('goalName')?.focus(),60);
+};
+window.saveGoal=function(){
+  const n=document.getElementById('goalName').value.trim();
+  const t=Number(document.getElementById('goalTarget').value);
+  const s=0;
   if(!n||!(t>0)){alert('Give it a name and a target amount.');return}
-  goals.push({name:n,target:t,saved:Math.max(0,Math.min(s,t)),photo:''});store();document.getElementById('goalEditor').style.display='none';drawGoals()};
+
+  goals.push({name:n,target:t,saved:Math.max(0,Math.min(s,t)),photo:''});
+  localStorage.setItem('fw_user_created_goal_'+n.toLowerCase(),'1');
+  store();
+
+  const editor=document.getElementById('goalEditor');
+  editor.style.display='none';
+  editor.setAttribute('aria-hidden','true');
+
+  drawGoals();
+  drawPlanGoals();
+
+  const plan=document.getElementById('planGoals');
+  const newIndex=goals.length-1;
+  const input=plan && plan.querySelector('.gIn[data-i="'+newIndex+'"]');
+  if(input){
+    input.focus();
+    input.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+};
 window.editGoalI=function(i){const x=goals[i];if(!x)return;
   const n=prompt('Goal name',x.name);if(n===null)return;
   const t=prompt('Target amount',x.target);if(t===null)return;
@@ -3041,36 +3213,100 @@ window.editGoalI=function(i){const x=goals[i];if(!x)return;
   if(n.trim())x.name=n.trim();if(tv>0)x.target=tv;if(Number.isFinite(sv)&&sv>=0)x.saved=Math.min(sv,x.target);
   store();drawGoals()};
 window.deleteGoalI=function(i){if(!goals[i])return;if(confirm('Remove '+goals[i].name+' from your goal history?')){goals.splice(i,1);store();drawGoals()}};
-window.fundGoalI=function(i){const v=prompt('How much would you like to add to '+goals[i].name+'?','1000');if(v===null)return;const a=Number(String(v).replace(/[^0-9.]/g,''));
-  if(a>0){goals[i].saved=Math.min(goals[i].target,goals[i].saved+a);store();drawGoals()}};
+window.fundGoalI=function(i){
+  if(typeof window.planGoalI==='function') window.planGoalI(i);
+};
 window.fwSaveGoalPhoto=function(i,data){if(!goals[i])return;goals[i].photo=data;if(store())drawGoals()};
 /* payday plan: only active goals */
-function drawPlanGoals(){const box=document.getElementById('planGoals');if(!box)return;
-  const active=goals.map((x,i)=>({x,i})).filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1));
+function drawPlanGoals(){
+  const box=document.getElementById('planGoals');
+  if(!box)return;
+
+  const active=goals.map((x,i)=>({x,i}))
+    .filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1));
+
   let prior={};
-  try{ const u=(currentUser&&currentUser.username)||'user'; const all=JSON.parse(localStorage.getItem('fw_payday_alloc_'+u)||'{}'); const key=typeof payday!=='undefined'&&payday instanceof Date?payday.toISOString().slice(0,10):''; prior=all[key]||{}; }catch(e){}
+  try{
+    const u=(currentUser&&currentUser.username)||'user';
+    const all=JSON.parse(localStorage.getItem('fw_payday_alloc_'+u)||'{}');
+    const key=typeof payday!=='undefined'&&payday instanceof Date?payday.toISOString().slice(0,10):'';
+    prior=all[key]||{};
+  }catch(e){}
+
+  if(!goals.length){
+    box.innerHTML=`<div class="goal-hint">
+      <strong>No goals yet.</strong>
+      <span>You don't need one to plan this payday.</span>
+    </div>
+    <button type="button" class="goal-add" style="margin-top:8px" onclick="fwAddGoal()">+ Add a goal</button>`;
+    return;
+  }
+
   if(!active.length){
-  box.innerHTML=`<div class="goal-hint">You don't have a goal yet — and that's completely okay. Add one if there's something you want this payday to help build, or skip it.</div>
-  <button type="button" class="goal-add" style="margin-top:8px" onclick="fwAddGoal();setTimeout(function(){document.getElementById('goalEditor')?.scrollIntoView({behavior:'smooth',block:'center'})},60)">+ Add your first goal</button>`;
-  return;
+    box.innerHTML=`<div class="goal-hint">
+      <strong>Your current goals are complete. ✦</strong>
+      <span>Nothing needs to be assigned here right now.</span>
+    </div>`;
+    return;
+  }
+
+  box.innerHTML=
+    `<div class="fw-goal-plan-intro">
+      <strong>FIRST, SEE WHAT YOU'RE BUILDING</strong>
+      <span>Your current progress stays separate from what you plan to put toward it today.</span>
+    </div>`+
+    active.map(o=>{
+      const need=Math.max(0,(Number(o.x.target)||0)-(Number(o.x.saved)||0));
+      const thisPay=Number(prior[o.i]||0);
+      return `<div class="fw-goal-plan-row">
+        <div class="fw-goal-plan-copy">
+          <div class="fw-goal-plan-name">${esc(o.x.name)}</div>
+          <div class="fw-goal-plan-progress">${P(o.x.saved||0)} of ${P(o.x.target)} · ${P(need)} still needed</div>
+        </div>
+        <div class="fw-goal-plan-input">
+          <label>This payday</label>
+          <input type="number" min="0" value="${thisPay}" class="gIn" data-i="${o.i}" oninput="updateFinal()">
+        </div>
+      </div>`;
+    }).join('');
 }
-  box.innerHTML=`<div class="fw-goal-plan-intro"><strong>FIRST, SEE WHAT YOU'RE BUILDING</strong><span>Your current progress stays separate from what you plan to put toward it today.</span></div>`+active.map(o=>{const need=Math.max(0,(Number(o.x.target)||0)-(Number(o.x.saved)||0));const thisPay=Number(prior[o.i]||0);return `<div class="fw-goal-plan-row"><div class="fw-goal-plan-copy"><div class="fw-goal-plan-name">${esc(o.x.name)}</div><div class="fw-goal-plan-progress">${P(o.x.saved||0)} of ${P(o.x.target)} · ${P(need)} still needed</div></div><div class="fw-goal-plan-input"><label>This payday</label><input type="number" min="0" value="${thisPay}" class="gIn" data-i="${o.i}" oninput="updateFinal()"></div></div>`}).join('')}`;
-}
-window.drawPlanGoals=drawPlanGoals;
+
 const gv=()=>[...document.querySelectorAll('.gIn')].map(e=>({i:Number(e.dataset.i),a:Number(e.value)||0}));
 const V=id=>Number((document.getElementById(id)||{}).value)||0;
-window.buildSuggestion=function(){const days=Math.max(1,daysUntilPayday());
-  if(remainder<=0){suggestion={save:0,enjoy:0,goals:{},available:0};advisorLead.textContent='This paycheck took care of life. That still counts as progress.';whyPlan.textContent='Your goals haven’t gone anywhere. We can look again next payday.';suggestGrid.innerHTML='';return}
-  const active=goals.map((x,i)=>({x,i})).filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1)),n=active.length,hasG=n>0&&remainder>=2000;
-  const available=Math.round(remainder*(hasG?.5:.65)),sav=Math.round(remainder*.25),enjoy=Math.round(remainder*.1),pool=remainder-available-sav-enjoy;
-  const gm={};active.forEach((o,j)=>gm[o.i]=hasG?(j<n-1?Math.round(pool/n):pool-Math.round(pool/n)*(n-1)):0);
-  suggestion={save:sav,enjoy,goals:gm,available:remainder-sav-enjoy-Object.values(gm).reduce((a,b)=>a+b,0)};
-  advisorLead.textContent=`You have ${P(remainder)} after expenses and ${days} day${days===1?'':'s'} until payday. Here’s one gentle starting point. It’s a suggestion, not a rule.`;
-  const goalChips=active.map(o=>[esc(o.x.name),gm[o.i]]);
-  suggestGrid.innerHTML=[['Savings',sav],['Enjoy',enjoy],...goalChips,['Keep available',suggestion.available]].map(x=>`<div class="suggest-chip">${x[0]}<b>${P(x[1])}</b></div>`).join('');
+window.buildSuggestion=function(){
+  const days=Math.max(1,daysUntilPayday());
+  if(remainder<=0){
+    suggestion={save:0,enjoy:0,goals:{},available:0};
+    advisorLead.textContent='This paycheck took care of life. That still counts as progress.';
+    whyPlan.textContent='There is nothing left to assign right now. That is information, not a failure.';
+    suggestGrid.innerHTML='';
+    return;
+  }
+
+  const active=goals.map((x,i)=>({x,i}))
+    .filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1));
+
+  const breathing=Math.round(remainder*.25);
+  const room=Math.round(remainder*.15);
+  const available=Math.max(0,remainder-breathing-room);
+  suggestion={save:breathing,enjoy:room,goals:{},available};
+
+  advisorLead.textContent=`You have ${P(remainder)} after expenses and ${days} day${days===1?'':'s'} until payday. Here’s what I’d look at first — not a rule.`;
+
+  const chips=[
+    ['Breathing room',breathing],
+    ['Room for You',room],
+    ['Unplanned for',available]
+  ];
+
+  active.forEach(o=>chips.push([o.x.name,null]));
+
+  suggestGrid.innerHTML=chips.map(x=>`<div class="suggest-chip">${x[0]}<b>${x[1]===null?'Choose if you want':P(x[1])}</b></div>`).join('');
+
   whyPlan.textContent=active.length
-    ? 'This keeps breathing room for the days ahead, leaves room to enjoy life, and gives your existing goals a little momentum. Change any amount.'
-    : 'You do not have a goal yet, so I will not invent one for you. You can add a goal if there is something you want this payday to help build — or leave that part open.';};
+    ? 'You have goals available, but I won’t decide what to put toward them for you. Choose an amount only if it feels right, and you can change it before saving.'
+    : 'You do not have a goal yet, so I will not invent one. You can add a goal if there is something you want this payday to help build — or leave that part open.';
+};
 window.useSuggestion=function(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;document.querySelectorAll('.gIn').forEach(e=>e.value=(suggestion.goals||{})[Number(e.dataset.i)]||0);updateFinal()};
 window.updateFinal=function(){const used=V('saveInput')+V('enjoyInput')+gv().reduce((a,o)=>a+o.a,0),left=remainder-used;
   finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));stageAdvice.textContent=left<0?`This is ${P(-left)} over what is actually left. Adjust an amount until it fits.`:`${P(left)} stays flexible. The guide suggests; you decide.`};
@@ -3864,7 +4100,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(overlay) overlay.style.display='none';
     const editor=document.getElementById('goalEditor');
     if(!editor) return false;
-    ['goalName','goalTarget','goalSaved'].forEach(function(id){
+    ['goalName','goalTarget'].forEach(function(id){
       const el=document.getElementById(id);
       if(el) el.value='';
     });
@@ -3883,7 +4119,371 @@ document.addEventListener('DOMContentLoaded', function(){
     openGoalEditor();
   },true);
 
-  window.fwAddGoal=openGoalEditor;
+  window.fwAddGoal=function(){
+    const editor=document.getElementById('goalEditor');
+    if(!editor)return false;
+    if(editor.parentElement!==document.body)document.body.appendChild(editor);
+    ['goalName','goalTarget'].forEach(function(id){
+      const el=document.getElementById(id);
+      if(el)el.value='';
+    });
+    editor.style.display='flex';
+    editor.style.visibility='visible';
+    editor.style.pointerEvents='auto';
+    editor.setAttribute('aria-hidden','false');
+    setTimeout(function(){document.getElementById('goalName')?.focus()},60);
+    return false;
+  };
+})();
+</script>
+
+
+<script id="fwMoneyGuideGoalGuard">
+(function(){
+  function readUserGoals(){
+    const keys=['fw_goals','future_wealth_goals','goals'];
+    for(const key of keys){
+      try{
+        const raw=localStorage.getItem(key);
+        if(!raw) continue;
+        const data=JSON.parse(raw);
+        const arr=Array.isArray(data) ? data : (data && Array.isArray(data.goals) ? data.goals : []);
+        if(Array.isArray(arr)) return arr.filter(g=>{
+          if(!g) return false;
+          const name=String(g.name||g.title||g.goal||'').trim().toLowerCase();
+          return name && !['aircon','japan'].includes(name) ? true : name && localStorage.getItem('fw_user_created_'+name)==='1';
+        });
+      }catch(e){}
+    }
+    return [];
+  }
+
+  function cleanGuide(){
+    const guide=document.querySelector('.money-guide, #moneyGuide, .guide-suggestion');
+    if(!guide) return;
+
+    // Only remove the known demo cards if the user has no matching saved goal.
+    const goals=readUserGoals();
+    const names=new Set(goals.map(g=>String(g.name||g.title||g.goal||'').trim().toLowerCase()));
+
+    guide.querySelectorAll('*').forEach(el=>{
+      if(el.children.length) return;
+      const text=(el.textContent||'').trim().toLowerCase();
+      if((text==='aircon' || text.includes('aircon')) && !names.has('aircon')){
+        const card=el.closest('.suggest-chip,.guide-card,.goal-chip,.suggestion-card');
+        if(card) card.remove();
+      }
+      if((text==='japan' || text.includes('japan')) && !names.has('japan')){
+        const card=el.closest('.suggest-chip,.guide-card,.goal-chip,.suggestion-card');
+        if(card) card.remove();
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    [300,800,1500].forEach(ms=>setTimeout(cleanGuide,ms));
+  });
+  window.cleanMoneyGuideGoals=cleanGuide;
+})();
+</script>
+
+
+<style id="fwMoneyMindRestore">
+.fw-incoming-card{
+  margin-top:12px;padding:13px 14px;border:1px solid #cfe9dc;
+  border-radius:14px;background:#eef8f4;color:#25483b;
+}
+.fw-incoming-card b{display:block;margin-bottom:3px}
+.fw-saved-note{
+  margin-top:10px;padding:12px 13px;border:1px solid #d9e1e6;
+  border-radius:14px;background:#fff;color:#31445b;
+}
+.fw-saved-note.done{opacity:.62}
+.fw-saved-note .fw-note-amounts{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.fw-note-chip{padding:4px 8px;border-radius:999px;background:#f1f4f6;font-size:11px;font-weight:800}
+.fw-note-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.fw-note-actions button{border:1px solid #cbd9e3;background:#fff;border-radius:9px;padding:7px 9px;font:700 11px Inter,Arial,sans-serif;cursor:pointer}
+</style>
+<script id="fwMoneyMindRestore">
+(function(){
+  function userKey(){
+    try{return 'fw_notes_'+((window.currentUser&&currentUser.username)||'user')}catch(e){return 'fw_notes_user'}
+  }
+  function load(){
+    try{
+      const v=JSON.parse(localStorage.getItem(userKey())||'[]');
+      return Array.isArray(v)?v:[];
+    }catch(e){return []}
+  }
+  function store(list){
+    try{localStorage.setItem(userKey(),JSON.stringify(list));return true}catch(e){return false}
+  }
+  function esc(t){
+    return String(t||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))
+  }
+  function money(n){return '₱'+Math.round(n).toLocaleString('en-PH')}
+  function render(){
+    const el=document.getElementById('savedNotes');
+    if(!el)return;
+    const list=load();
+    if(!list.length){
+      el.innerHTML='<div class="sub">Nothing saved yet. That’s okay.</div>';
+      return;
+    }
+    el.innerHTML=list.map((n,i)=>{
+      const incoming=!!n.incoming;
+      const amounts=(n.a||[]).map(Number).filter(Boolean);
+      return `<div class="fw-saved-note ${n.done?'done':''}">
+        <div><b>${incoming?'Incoming payment':'Note'}</b></div>
+        <div style="margin-top:4px">${esc(n.t)}</div>
+        ${amounts.length?`<div class="fw-note-amounts">${amounts.map(a=>`<span class="fw-note-chip">${money(a)}</span>`).join('')}</div>`:''}
+        <small style="display:block;margin-top:8px;color:#7a8995">${esc(n.d||'')}</small>
+        <div class="fw-note-actions">
+          ${amounts.length?`<button type="button" data-note-paid="${i}">${n.done?'Undo paid':'Mark paid'}</button>`:''}
+          <button type="button" data-note-remove="${i}">Remove</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function saveNote(){
+    const x=document.getElementById('moneyNote'), out=document.getElementById('noteSummary');
+    const text=(x&&x.value||'').trim();
+    if(!text){
+      if(out)out.textContent='Write it exactly as it comes. You do not have to organize it first.';
+      return;
+    }
+
+    const amounts=(text.match(/(?:₱|PHP|\$)?\s*\d[\d,]*(?:\.\d+)?/gi)||[])
+      .map(v=>Number(v.replace(/[^\d.]/g,'').replace(/,/g,''))).filter(Boolean);
+
+    const lower=text.toLowerCase();
+    const incoming=/incoming|coming in|getting paid|will receive|receive|payment coming|payday|salary|income/.test(lower);
+
+    const list=load();
+    list.unshift({
+      t:text,
+      a:amounts,
+      incoming,
+      done:false,
+      d:new Date().toLocaleDateString('en-PH',{month:'short',day:'numeric'})
+    });
+    store(list);
+    render();
+
+    if(out){
+      if(incoming){
+        const total=amounts.reduce((a,b)=>a+b,0);
+        out.innerHTML=`<div class="fw-incoming-card"><b>✦ Incoming payment saved</b>${total?`I’ll keep ${money(total)} in your Money Mind so you don’t have to hold it in your head.`:'I’ll keep this incoming-payment note here for you.'}<div class="fw-note-actions"><button type="button" onclick="if(typeof openPayday==='function')openPayday();if(typeof closeNotes==='function')closeNotes()">Plan it when it arrives</button></div></div>`;
+      }else{
+        out.innerHTML='<div class="fw-incoming-card"><b>✦ Saved for you</b>You don’t have to solve this right now. It’s here when you’re ready.</div>';
+      }
+    }
+    if(x)x.value='';
+  }
+
+  window.summarizeNote=saveNote;
+  window.fwRenderMoneyMind=render;
+
+  document.addEventListener('click',function(e){
+    const paid=e.target.closest('[data-note-paid]');
+    if(paid){
+      const i=Number(paid.dataset.notePaid), list=load();
+      if(list[i]){list[i].done=!list[i].done;store(list);render()}
+    }
+    const rem=e.target.closest('[data-note-remove]');
+    if(rem){
+      const i=Number(rem.dataset.noteRemove), list=load();
+      list.splice(i,1);store(list);render()
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded',function(){
+    render();
+    [300,900,1600].forEach(ms=>setTimeout(render,ms));
+  });
+})();
+</script>
+
+
+<script id="fwNavigationButtonFix">
+document.addEventListener('click',function(e){
+  const nav=e.target.closest?.('.bottomnav .navbtn');
+  if(!nav)return;
+  const tab=nav.dataset.tab;
+  if(tab==='notes'){
+    document.querySelectorAll('.overlay,.guide-overlay').forEach(x=>{
+      if(x.id!=='notesPage' && x.id!=='goalEditor') x.style.display='none';
+    });
+    setTimeout(()=>{ if(typeof openNotes==='function')openNotes(); if(typeof fwRenderMoneyMind==='function')fwRenderMoneyMind(); },20);
+  }
+  if(tab==='goals'){
+    document.querySelectorAll('.overlay,.guide-overlay').forEach(x=>{
+      if(x.id!=='goalEditor') x.style.display='none';
+    });
+    setTimeout(()=>{
+      const g=document.getElementById('lifeGoals');
+      if(g)g.scrollIntoView({behavior:'smooth',block:'start'});
+    },20);
+  }
+},true);
+</script>
+
+<style id="fwGoalCreateZeroFix">
+#goalEditor .goal-create-note{
+  margin-top:6px;color:#8fa4b7;font:600 12px/1.45 Inter,Arial,sans-serif;
+}
+</style>
+<script id="fwGoalCreateZeroFixScript">
+document.addEventListener('DOMContentLoaded',function(){
+  const editor=document.getElementById('goalEditor');
+  if(!editor || editor.querySelector('.goal-create-note')) return;
+  const target=document.getElementById('goalTarget');
+  if(target){
+    const note=document.createElement('div');
+    note.className='goal-create-note';
+    note.textContent="Your goal starts at ₱0. You can add money later when it fits.";
+    target.parentElement.appendChild(note);
+  }
+});
+</script>
+
+<style id="fwGoalFundingFlow">
+.goal-funding-note{
+  margin-top:8px;
+  color:#8fa4b7;
+  font:600 11px/1.45 Inter,Arial,sans-serif;
+}
+</style>
+<script id="fwGoalFundingFlowScript">
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('#goalGrid .dream-card').forEach(function(card){
+    if(card.querySelector('.goal-funding-note')) return;
+    const foot=card.querySelector('.goal-foot');
+    if(foot){
+      const note=document.createElement('div');
+      note.className='goal-funding-note';
+      note.textContent='When payday comes, you can choose whether this gets anything.';
+      foot.parentElement.appendChild(note);
+    }
+  });
+});
+</script>
+
+<script id="fwMoneyMindAdvicePlan">
+(function(){
+  function esc(t){return String(t||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
+  function money(n){return '₱'+Math.round(n).toLocaleString('en-PH')}
+
+  function adviceFor(text){
+    const s=String(text||'').toLowerCase();
+    if(/bill|tuition|rent|electric|water|insurance|due|payment/.test(s))
+      return "This sounds like something worth planning for before it arrives. You don't have to pay it today—let's give it a place in the next payday plan.";
+    if(/birthday|gift|trip|travel|wedding|event|dinner|celebrat/.test(s))
+      return "You can plan for this without taking the joy out of it. Let's decide what you want to set aside when the money is actually available.";
+    if(/salary|income|paycheck|payment coming|incoming|receive|freelance|client/.test(s))
+      return "Good to keep this here. When the money arrives, we can turn it into a real payday plan instead of spending it in your head twice.";
+    if(/worry|worried|stress|anxious|overwhelmed|scared/.test(s))
+      return "You don't have to solve everything in this note. Let's name what is coming up, then decide on one small next step.";
+    return "Keep this here for now. When the timing or amount is clearer, you can turn it into a plan—nothing is committed yet.";
+  }
+
+  function renderAdvice(text, incoming){
+    const box=document.getElementById('noteSummary');
+    if(!box)return;
+    const upcoming = incoming || /next week|next month|tomorrow|later|upcoming|coming|on \w+day|due/.test(String(text||'').toLowerCase());
+    if(!upcoming){
+      box.innerHTML='<div class="fw-mind-advice"><b>✦ A little perspective</b><div>'+esc(adviceFor(text))+'</div></div>';
+      return;
+    }
+    box.innerHTML=
+      '<div class="fw-mind-next">'+
+        '<b>✦ This sounds like something coming up.</b>'+
+        '<p>'+esc(adviceFor(text))+'</p>'+
+        '<div class="fw-mind-next-actions">'+
+          '<button type="button" id="fwMindPlanUpcoming">Plan it</button>'+
+          '<button type="button" id="fwMindKeepUpcoming">Just keep it here</button>'+
+        '</div>'+
+      '</div>';
+    document.getElementById('fwMindPlanUpcoming')?.addEventListener('click',function(){
+      if(typeof openPayday==='function') openPayday();
+      if(typeof closeNotes==='function') closeNotes();
+    });
+    document.getElementById('fwMindKeepUpcoming')?.addEventListener('click',function(){
+      const b=document.querySelector('.fw-mind-next-actions');
+      if(b)b.innerHTML='<span style="color:#8fa4b7;font-weight:700;font-size:11px">Kept here. You can plan it when you're ready.</span>';
+    });
+  }
+
+  // Enhance the existing note saver rather than replacing its storage.
+  document.addEventListener('DOMContentLoaded',function(){
+    const input=document.getElementById('moneyNote');
+    if(!input)return;
+    input.addEventListener('input',function(){
+      const t=input.value.trim();
+      if(t.length>8) renderAdvice(t,/incoming|coming in|will receive|receive|payment coming|payday|salary|income/i.test(t));
+    });
+  });
+
+  window.fwMoneyMindAdvice=renderAdvice;
+})();
+</script>
+
+
+<script id="fwMoneyMindReminder">
+(function(){
+  function esc(t){return String(t||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
+
+  function renderReminder(text){
+    const box=document.getElementById('noteSummary');
+    if(!box || !text)return;
+    const amounts=(text.match(/(?:₱|PHP|\$)?\s*\d[\d,]*(?:\.\d+)?/gi)||[])
+      .map(v=>Number(v.replace(/[^\d.]/g,'').replace(/,/g,''))).filter(Boolean);
+    if(!amounts.length)return;
+
+    const total=amounts.reduce((a,b)=>a+b,0);
+    const existing=box.querySelector('.fw-mind-reminder');
+    if(existing)return;
+
+    const reminder=document.createElement('div');
+    reminder.className='fw-mind-reminder';
+    reminder.innerHTML=
+      '<b>✦ Want me to remind you?</b>'+
+      '<div style="margin-top:4px;color:#718397">I found '+esc('₱'+Math.round(total).toLocaleString('en-PH'))+' in what you wrote. Pick when you want to be reminded.</div>'+
+      '<div class="row">'+
+        '<input type="date" id="fwMindReminderDate">'+
+        '<input type="time" id="fwMindReminderTime" value="09:00">'+
+        '<button type="button" id="fwMindReminderSave">Remind me</button>'+
+      '</div>'+
+      '<div id="fwMindReminderStatus" style="margin-top:7px;font-size:11px;color:#7b8b97"></div>';
+    box.appendChild(reminder);
+
+    document.getElementById('fwMindReminderSave')?.addEventListener('click',function(){
+      const d=document.getElementById('fwMindReminderDate')?.value;
+      const t=document.getElementById('fwMindReminderTime')?.value || '09:00';
+      const status=document.getElementById('fwMindReminderStatus');
+      if(!d){
+        if(status)status.textContent='Choose a date first.';
+        return;
+      }
+      const when=d+'T'+t;
+      const list=JSON.parse(localStorage.getItem('fw_money_mind_reminders')||'[]');
+      list.unshift({text,amount:total,when,createdAt:new Date().toISOString()});
+      localStorage.setItem('fw_money_mind_reminders',JSON.stringify(list));
+      if(status)status.textContent='Reminder saved for '+new Date(when).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})+'.';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    const input=document.getElementById('moneyNote');
+    if(!input)return;
+    input.addEventListener('input',function(){
+      // Give the user the reminder option as soon as an amount is detected.
+      if(/\d[\d,]*/.test(input.value)) renderReminder(input.value.trim());
+    });
+  });
+
+  window.fwMoneyMindReminder=renderReminder;
 })();
 </script>
 
