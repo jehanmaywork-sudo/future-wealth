@@ -2171,6 +2171,41 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 
+
+<style id="fwGoalsNavFix">
+#bottomNav .navbtn[data-tab="goals"] { transition: transform .16s ease, opacity .16s ease; }
+#bottomNav .navbtn[data-tab="goals"].active { transform: translateY(-1px); opacity: 1; }
+</style>
+
+
+
+<style id="fwWhyEditFix">
+.fw-why-inline-edit{
+  display:inline-block;
+  margin-top:7px;
+  border:0;
+  background:transparent;
+  padding:0;
+  color:#176BD6;
+  font:700 11px/1.2 "Inter",Arial,sans-serif;
+  cursor:pointer;
+}
+.fw-why-inline-edit:hover{text-decoration:underline;}
+</style>
+
+
+<style id="fwGoalsEmptyStateFix">
+.goal-hint{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  color:#8fa4b7;
+  font:600 13px/1.5 "Inter",Arial,sans-serif;
+}
+.goal-hint strong{color:#e8f1f8;font-size:15px}
+.goal-hint span{max-width:620px}
+</style>
+
 </head>
 <body>
 
@@ -2309,11 +2344,12 @@ document.addEventListener('DOMContentLoaded',function(){
     <div class="eyebrow">Payday ✦</div><h2>Your hard work just landed.</h2>
     <div class="sub">First take care of life. Then we’ll build with what is actually left.</div>
     <div class="field"><label>Paycheck received</label><input id="income" type="number" placeholder="e.g. 20000" oninput="updateRemainder()"></div>
-    <div class="expense-toolbar"><div><div class="eyebrow">Take care of life</div><b>Your expenses</b></div><button class="edit-expenses" onclick="openExpenseEditor()">Edit options</button></div>
+    <div class="expense-toolbar"><div><div class="eyebrow">Take care of life</div>
+<b>Your expenses</b></div><button class="edit-expenses" onclick="openExpenseEditor()">Edit options</button></div>
     <div class="expense-list" id="expenseInputs"></div>
     <div id="comingInPlan"></div>
     <div class="remaining-card"><div style="font-size:11px;opacity:.75;letter-spacing:.11em">ACTUALLY LEFT AFTER EXPENSES</div><div class="big" id="afterExpenses">₱0</div><div style="font-size:13px;opacity:.82">This is what we can plan next.</div></div>
-    <div class="sheet-actions"><button class="primary" onclick="continueToPlan()">Help me plan what’s left</button><button class="secondary" onclick="closePayday()">Cancel</button></div>
+    <div class="sheet-actions"><button class="primary" onclick="continueToPlan()">Build my plan →</button><button class="secondary" onclick="closePayday()">Cancel</button></div>
 
     <div class="stage2" id="stage2">
       <div class="suggestion">
@@ -2323,9 +2359,13 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="why" id="whyPlan"></div>
         <button class="linkbtn" onclick="useSuggestion()">Use this starting plan →</button>
       </div>
-      <div class="eyebrow">Make it yours</div>
-      <div class="row"><div class="field"><label>Savings</label><input id="saveInput" type="number" value="0" oninput="updateFinal()"></div><div class="field"><label>Enjoy</label><input id="enjoyInput" type="number" value="0" oninput="updateFinal()"></div></div>
-      <div class="eyebrow" style="margin-top:14px">Toward your goals</div><div id="planGoals"></div>
+      <div class="eyebrow" style="margin-top:18px">Build what matters ✦</div>
+      <h3 style="margin:5px 0 6px">What would you like this payday to help you build?</h3>
+      <div class="sub" style="margin-bottom:12px">If you already have a goal, choose what this payday can help build. If you don't, you can add one or skip this step.</div>
+      <div id="planGoals"></div>
+
+      <div class="eyebrow" style="margin-top:22px">Make room for you</div>
+      <div class="row"><div class="field"><label>Future You</label><input id="saveInput" type="number" value="0" oninput="updateFinal()"></div><div class="field"><label>Room for You</label><input id="enjoyInput" type="number" value="0" oninput="updateFinal()"></div></div>
       <div class="allocation"><span>Keep available</span><b id="finalAvailable">₱0</b></div>
       <div class="notice" id="stageAdvice"></div>
       <div class="sheet-actions"><button class="primary" onclick="confirmPlan()">Use this plan</button><button class="secondary" onclick="backToExpenses()">Back</button></div>
@@ -2388,7 +2428,19 @@ function buildSuggestion(){
  suggestGrid.innerHTML=[['🛟 Savings',sav],['☕ Enjoy',enjoy],['❄️ Aircon',air],['🇯🇵 Japan',japan],['💵 Keep available',available]].map(x=>`<div class="suggest-chip">${x[0]}<b>${peso(x[1])}</b></div>`).join('');
  whyPlan.textContent=`Why: it keeps breathing room for the next ${days} day${days===1?'':'s'}, builds some security, leaves room to enjoy life, and keeps your goals moving. You can change every amount.`;
 }
-function continueToPlan(){updateRemainder();if(val('income')<=0){alert('Enter your paycheck first.');return}if(remainder<0){alert('Your expenses are higher than this paycheck. Adjust them first so the plan is realistic.');return}stage2.style.display='block';buildSuggestion();updateFinal();stage2.scrollIntoView({behavior:'smooth'})}
+function continueToPlan(){
+  updateRemainder();
+  if(val('income')<=0){alert('Enter your paycheck first.');return}
+  if(remainder<0){alert('Your expenses are higher than this paycheck. Adjust them first so the plan is realistic.');return}
+  stage2.style.display='block';
+
+  // Use the real, user-created goals only. Never invent example goals.
+  if(typeof window.buildSuggestion==='function') window.buildSuggestion();
+  if(typeof window.drawPlanGoals==='function') window.drawPlanGoals();
+
+  updateFinal();
+  stage2.scrollIntoView({behavior:'smooth'});
+}
 function backToExpenses(){stage2.style.display='none'}
 function useSuggestion(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;airInput.value=suggestion.air||0;japanInput.value=suggestion.japan||0;updateFinal()}
 function updateFinal(){const used=val('saveInput')+val('enjoyInput')+val('airInput')+val('japanInput'),left=remainder-used;finalAvailable.textContent=(left<0?'-':'')+peso(Math.abs(left));stageAdvice.textContent=left<0?`This is ${peso(-left)} over what is actually left. Adjust an amount until it fits.`:`${peso(left)} stays flexible. The adviser suggests; you decide.`}
@@ -2611,8 +2663,18 @@ function goTab(name,btn){
     closeGuide(); closeNotes(); openPayday();
   }else if(name==='goals'){
     closeGuide(); closeNotes();
-    const target=document.getElementById('goals') || [...document.querySelectorAll('h1,h2,h3,.eyebrow')].find(x=>/goal|life you/i.test(x.textContent));
-    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+    if(typeof closePayday==='function') closePayday();
+    const paydayOverlay=document.getElementById('overlay');
+    if(paydayOverlay) paydayOverlay.style.display='none';
+    setActiveTab('goals');
+    const target=document.getElementById('lifeGoals') || document.getElementById('goals') ||
+      [...document.querySelectorAll('#lifeGoals, .life-goals-section, h1, h2, h3, .eyebrow')]
+        .find(x=>/THE LIFE I[’']M BUILDING|goal/i.test((x.textContent||'')));
+    if(target){
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+    }else{
+      window.location.hash='goals';
+    }
   }else if(name==='guide'){
     closeNotes(); openGuide();
   }else if(name==='notes'){
@@ -2718,7 +2780,19 @@ function fwEditGoal(btn){
   fwRefreshGoal(card);
 }
 function fwAddGoal(){
-  alert('Goal creator is ready for the next build — Japan and Aircon are restored first so you can test the complete direction.');
+  const editor=document.getElementById('goalEditor');
+  if(!editor){
+    alert('Goal creator could not be opened.');
+    return;
+  }
+  ['goalName','goalTarget','goalSaved'].forEach(function(id){
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  editor.style.display='flex';
+  setTimeout(function(){
+    document.getElementById('goalName')?.focus();
+  },50);
 }
 </script>
 
@@ -2975,9 +3049,14 @@ function drawPlanGoals(){const box=document.getElementById('planGoals');if(!box)
   const active=goals.map((x,i)=>({x,i})).filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1));
   let prior={};
   try{ const u=(currentUser&&currentUser.username)||'user'; const all=JSON.parse(localStorage.getItem('fw_payday_alloc_'+u)||'{}'); const key=typeof payday!=='undefined'&&payday instanceof Date?payday.toISOString().slice(0,10):''; prior=all[key]||{}; }catch(e){}
-  if(!active.length){box.innerHTML=`<div class="goal-hint">No active goals right now. Add a goal first, then you can decide what this payday can do for it.</div>`;return}
+  if(!active.length){
+  box.innerHTML=`<div class="goal-hint">You don't have a goal yet — and that's completely okay. Add one if there's something you want this payday to help build, or skip it.</div>
+  <button type="button" class="goal-add" style="margin-top:8px" onclick="fwAddGoal();setTimeout(function(){document.getElementById('goalEditor')?.scrollIntoView({behavior:'smooth',block:'center'})},60)">+ Add your first goal</button>`;
+  return;
+}
   box.innerHTML=`<div class="fw-goal-plan-intro"><strong>FIRST, SEE WHAT YOU'RE BUILDING</strong><span>Your current progress stays separate from what you plan to put toward it today.</span></div>`+active.map(o=>{const need=Math.max(0,(Number(o.x.target)||0)-(Number(o.x.saved)||0));const thisPay=Number(prior[o.i]||0);return `<div class="fw-goal-plan-row"><div class="fw-goal-plan-copy"><div class="fw-goal-plan-name">${esc(o.x.name)}</div><div class="fw-goal-plan-progress">${P(o.x.saved||0)} of ${P(o.x.target)} · ${P(need)} still needed</div></div><div class="fw-goal-plan-input"><label>This payday</label><input type="number" min="0" value="${thisPay}" class="gIn" data-i="${o.i}" oninput="updateFinal()"></div></div>`}).join('')}`;
 }
+window.drawPlanGoals=drawPlanGoals;
 const gv=()=>[...document.querySelectorAll('.gIn')].map(e=>({i:Number(e.dataset.i),a:Number(e.value)||0}));
 const V=id=>Number((document.getElementById(id)||{}).value)||0;
 window.buildSuggestion=function(){const days=Math.max(1,daysUntilPayday());
@@ -2987,8 +3066,11 @@ window.buildSuggestion=function(){const days=Math.max(1,daysUntilPayday());
   const gm={};active.forEach((o,j)=>gm[o.i]=hasG?(j<n-1?Math.round(pool/n):pool-Math.round(pool/n)*(n-1)):0);
   suggestion={save:sav,enjoy,goals:gm,available:remainder-sav-enjoy-Object.values(gm).reduce((a,b)=>a+b,0)};
   advisorLead.textContent=`You have ${P(remainder)} after expenses and ${days} day${days===1?'':'s'} until payday. Here’s one gentle starting point. It’s a suggestion, not a rule.`;
-  suggestGrid.innerHTML=[['Savings',sav],['Enjoy',enjoy],...active.map(o=>[esc(o.x.name),gm[o.i]]),['Keep available',suggestion.available]].map(x=>`<div class="suggest-chip">${x[0]}<b>${P(x[1])}</b></div>`).join('');
-  whyPlan.textContent='It keeps breathing room for the days ahead, builds a little security, leaves room to enjoy life, and moves your goals forward. Change any amount.'};
+  const goalChips=active.map(o=>[esc(o.x.name),gm[o.i]]);
+  suggestGrid.innerHTML=[['Savings',sav],['Enjoy',enjoy],...goalChips,['Keep available',suggestion.available]].map(x=>`<div class="suggest-chip">${x[0]}<b>${P(x[1])}</b></div>`).join('');
+  whyPlan.textContent=active.length
+    ? 'This keeps breathing room for the days ahead, leaves room to enjoy life, and gives your existing goals a little momentum. Change any amount.'
+    : 'You do not have a goal yet, so I will not invent one for you. You can add a goal if there is something you want this payday to help build — or leave that part open.';};
 window.useSuggestion=function(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;document.querySelectorAll('.gIn').forEach(e=>e.value=(suggestion.goals||{})[Number(e.dataset.i)]||0);updateFinal()};
 window.updateFinal=function(){const used=V('saveInput')+V('enjoyInput')+gv().reduce((a,o)=>a+o.a,0),left=remainder-used;
   finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));stageAdvice.textContent=left<0?`This is ${P(-left)} over what is actually left. Adjust an amount until it fits.`:`${P(left)} stays flexible. The guide suggests; you decide.`};
@@ -3168,6 +3250,11 @@ const t=document.querySelector('.fw-unlock-float');if(t)el.appendChild(t);
     if(modal){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
   }
 
+  // Make the editor available to the Home "Edit" button.
+  window.openWhy = openWhy;
+  window.closeWhy = closeWhy;
+
+
   document.addEventListener('DOMContentLoaded',function(){
 
     document.getElementById('fwWhySave')?.addEventListener('click',function(){
@@ -3192,105 +3279,143 @@ const t=document.querySelector('.fw-unlock-float');if(t)el.appendChild(t);
 </script>
 <!-- FW_MY_WHY_END -->
 
-
-
-
-
-<script id="fwWhySaveFix">
+<script id="fwWhyAuthoritativeFinal">
 (function(){
-  const RAW='fw_my_why_raw', POLISHED='fw_my_why', SEEN='fw_my_why_seen';
+  const KEY='fw_my_why', RAW='fw_my_why_raw';
 
-  function nickname(){
-    return (localStorage.getItem('fw_user_nickname') ||
-            localStorage.getItem('fw_prototype_nickname') || '').trim();
+  function esc(t){
+    return String(t).replace(/[&<>"']/g,c=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
   }
-  function polish(raw){
-    let s=(raw||'').trim().replace(/\s+/g,' ');
-    if(!s) return '';
-    s=s.charAt(0).toUpperCase()+s.slice(1);
-    if(!/[.!?]$/.test(s)) s+='.';
-    return s;
+
+  function person(){
+    const u=window.currentUser||{};
+    return String(
+      u.name ||
+      localStorage.getItem('fw_user_nickname') ||
+      localStorage.getItem('fw_prototype_nickname') ||
+      ''
+    ).trim();
   }
-  function closeModal(){
-    const modal=document.getElementById('fwWhyModal');
-    if(modal){
-      modal.classList.remove('show');
-      modal.setAttribute('aria-hidden','true');
-      modal.style.display='none';
-    }
-  }
-  function prep(){
-    const title=document.getElementById('fwWhyTitle');
-    const p=document.querySelector('#fwWhyModal .fw-why-panel p');
+
+  function why(){
     const input=document.getElementById('fwWhyInput');
-    const save=document.getElementById('fwWhySave');
-    if(title) title.textContent=nickname()?`WHAT'S YOUR WHY, ${nickname().toUpperCase()}?`:"WHAT'S YOUR WHY?";
-    if(p) p.textContent="What do you want your money to help you do? Write it in your own words.";
-    if(input){
-      input.placeholder="Example: Travel, feel secure, and enjoy my money without guilt.";
-      input.value=localStorage.getItem(RAW)||localStorage.getItem(POLISHED)||'';
-      input.style.color='#0d1735';
-      input.style.webkitTextFillColor='#0d1735';
+    const live=(input && input.value || '').trim();
+    if(live) return live;
+    return (localStorage.getItem(KEY) || localStorage.getItem(RAW) || '').trim();
+  }
+
+  function encouragement(w){
+    const n=person();
+    const who=n ? n.split(/\s+/)[0] : '';
+    const s=w.toLowerCase();
+
+    if(!w){
+      return who
+        ? `${who}, you don't have to figure everything out today. Let's take care of one payday at a time.`
+        : `You don't have to figure everything out today. Let's take care of one payday at a time.`;
     }
-    if(save) save.textContent='Save my why';
+
+    // The user's exact Why stays visible. This message is only the
+    // supportive response around it.
+    if(/travel|trip|japan|vacation|holiday|explore|adventure/.test(s))
+      return who ? `${who}, you're building toward the freedom and experiences you want. You don't have to get there all at once.` : `You're building toward the freedom and experiences you want. You don't have to get there all at once.`;
+
+    if(/aircon|home|house|room|comfortable|comfort|rest|space|laptop|car|purchase|buy/.test(s))
+      return who ? `${who}, you're building something that can make your everyday life better. One thoughtful payday at a time.` : `You're building something that can make your everyday life better. One thoughtful payday at a time.`;
+
+    if(/secure|security|emergency|unexpected|worry|worried|debt|stress|peace|safe/.test(s))
+      return who ? `${who}, you're creating more breathing room for yourself. You don't have to solve everything at once.` : `You're creating more breathing room for yourself. You don't have to solve everything at once.`;
+
+    if(/enjoy|guilt|guilty|freedom|fun|life|spend|happiness|happy|live|treat|hobby/.test(s))
+      return who ? `${who}, you don't have to choose between taking care of future you and enjoying today. We can make room for both.` : `You don't have to choose between taking care of future you and enjoying today. We can make room for both.`;
+
+    if(/family|mom|mother|dad|father|parents|children|kids|loved ones|provide|support|help them/.test(s))
+      return who ? `${who}, you're building toward something connected to the people and life you care about. One thoughtful payday at a time.` : `You're building toward something connected to the people and life you care about. One thoughtful payday at a time.`;
+
+    if(/school|education|tuition|study|degree|course|learn/.test(s))
+      return who ? `${who}, you're putting your money toward a future you care about. You don't have to fund the whole journey at once.` : `You're putting your money toward a future you care about. You don't have to fund the whole journey at once.`;
+
+    return who
+      ? `${who}, this is what you chose to build toward. Let's keep it close while we plan today — without pressure.`
+      : `This is what you chose to build toward. Let's keep it close while we plan today — without pressure.`;
+  }
+
+  function saveExact(){
+    const input=document.getElementById('fwWhyInput');
+    const value=(input && input.value || '').trim();
+    if(!value) return false;
+
+    localStorage.setItem(KEY,value);
+    localStorage.setItem(RAW,value);
+    localStorage.setItem('fw_my_why_seen','1');
+
+    const u=window.currentUser||{};
+    [u.username,u.name,localStorage.getItem('fw_user_nickname'),localStorage.getItem('fw_prototype_nickname')]
+      .filter(Boolean)
+      .forEach(v=>{
+        const slug=String(v).trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'_')||'user';
+        localStorage.setItem('fw_my_why_'+slug,value);
+      });
+
+    return true;
+  }
+
+  function render(){
+    const hero=document.querySelector('.hero');
+    if(!hero) return;
+
+    let box=hero.querySelector('.fw-why-encouragement');
+    if(!box){
+      box=document.createElement('div');
+      box.className='fw-why-encouragement';
+      const g=hero.querySelector('#personalGreeting');
+      if(g) g.insertAdjacentElement('afterend',box);
+      else hero.prepend(box);
+    }
+
+    const w=why();
+
+    box.innerHTML =
+      '<b>YOUR WHY ✦</b>' +
+      (w ? '<div class="fw-why-user">“'+esc(w)+'”</div>' : '') +
+      '<div class="fw-why-nudge">'+esc(encouragement(w))+'</div>' +
+      '<div class="fw-why-connection">Built from what you told me matters to you.</div>' +
+      '<button type="button" class="fw-why-inline-edit">Edit</button>';
+
+    const edit=box.querySelector('.fw-why-inline-edit');
+    if(edit){
+      edit.addEventListener('click',function(e){
+        e.preventDefault();
+        if(typeof window.openWhy==='function') window.openWhy(true);
+      });
+    }
   }
 
   document.addEventListener('DOMContentLoaded',function(){
-    prep();
+    render();
+    [300,900,1600].forEach(ms=>setTimeout(render,ms));
 
-    const save=document.getElementById('fwWhySave');
-    if(save){
-      // Replace node to remove conflicting legacy listeners.
-      const clean=save.cloneNode(true);
-      save.parentNode.replaceChild(clean,save);
-      clean.addEventListener('click',function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        const input=document.getElementById('fwWhyInput');
-        const raw=(input?.value||'').trim();
-        if(!raw){
-          input?.focus();
-          if(input) input.placeholder='Write your why here first.';
-          return;
-        }
-        localStorage.setItem(RAW,raw);
-        localStorage.setItem(POLISHED,polish(raw));
-        localStorage.setItem(SEEN,'1');
-        clean.textContent='Saved ✓';
-        setTimeout(closeModal,350);
-      });
-    }
-
-    const skip=document.getElementById('fwWhySkip');
-    if(skip){
-      const cleanSkip=skip.cloneNode(true);
-      skip.parentNode.replaceChild(cleanSkip,skip);
-      cleanSkip.addEventListener('click',function(e){
-        e.preventDefault();
-        localStorage.setItem(SEEN,'1');
-        closeModal();
-      });
-    }
-
-    // After nickname is entered, open My Why only if it has not been answered.
     document.addEventListener('click',function(e){
-      const btn=e.target?.closest?.('#fwNameStep button');
-      if(btn && !localStorage.getItem(SEEN)){
-        setTimeout(function(){
-          prep();
-          const modal=document.getElementById('fwWhyModal');
-          if(modal){
-            modal.style.display='';
-            modal.classList.add('show');
-            modal.setAttribute('aria-hidden','false');
-            setTimeout(()=>document.getElementById('fwWhyInput')?.focus(),80);
-          }
-        },180);
+      if(e.target.closest('#fwWhySave')){
+        saveExact();
+        setTimeout(render,50);
+        setTimeout(render,250);
+      }
+      if(e.target.closest('#fwWhySkip')){
+        setTimeout(render,100);
       }
     });
   });
+
+  window.fwRefreshWhy=render;
 })();
 </script>
+
+
+
+
 
 
 <!-- Future Wealth Final: Save Image feature -->
@@ -3373,9 +3498,13 @@ window.fwSavePlanImage=function(){
 <style id="fwFinalFlowAndWhyPatch">
 /* Front: make the promise clear and game-like without adding clutter. */
 .hero h1::after{content:"BUILD WHAT MATTERS."!important}
-.fw-front-philosophy{margin:0 0 22px;max-width:650px;font:700 15px/1.5 "Inter",Arial,sans-serif;color:#53627A;}
-.fw-why-encouragement{margin:0 0 12px;max-width:680px;padding:13px 15px;border:1px solid #D7E2EA;border-radius:14px;background:#F5FAFD;color:#31445B;font:650 14px/1.5 "Inter",Arial,sans-serif;}
-.fw-why-encouragement b{display:block;color:#176BD6;font-size:10px;letter-spacing:.12em;margin-bottom:4px}
+.fw-front-philosophy{margin:0 0 18px;max-width:650px;font:700 15px/1.5 "Inter",Arial,sans-serif;color:#53627A;}
+.fw-why-encouragement{margin:0 0 18px;max-width:680px;padding:4px 0 2px;border:0;background:transparent;color:#53627A;font:600 13px/1.55 "Inter",Arial,sans-serif;}
+.fw-why-encouragement b{display:block;color:#718397;font-size:9px;letter-spacing:.14em;margin-bottom:5px;font-weight:800}
+.fw-why-user{font:650 15px/1.55 "Inter",Arial,sans-serif;color:#24334D;font-style:italic;max-width:620px}
+.fw-why-nudge{margin-top:5px;color:#718397;font-size:12px;font-weight:600;max-width:620px}
+.fw-why-connection{margin-top:4px;color:#91a1b2;font:600 11px/1.45 "Inter",Arial,sans-serif;max-width:620px}
+.fw-why-inline-edit{margin-top:5px;border:0;background:transparent;padding:0;color:#176BD6;font:700 11px "Inter",Arial,sans-serif;cursor:pointer}
 .fw-goal-plan-intro{margin:4px 0 10px;padding:12px 13px;border-radius:13px;background:#F5FAFD;border:1px solid #D7E2EA;display:flex;flex-direction:column;gap:3px}
 .fw-goal-plan-intro strong{font:800 10px/1.2 "Inter",Arial,sans-serif;letter-spacing:.11em;color:#176BD6}
 .fw-goal-plan-intro span{font:600 12px/1.45 "Inter",Arial,sans-serif;color:#61758C}
@@ -3383,46 +3512,6 @@ window.fwSavePlanImage=function(){
 .fw-goal-plan-name{font-weight:850;font-size:14px}.fw-goal-plan-progress{font-size:11px;color:#718397;margin-top:3px}.fw-goal-plan-input label{display:block;font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#176BD6;margin-bottom:5px}.fw-goal-plan-input input{width:100%;box-sizing:border-box}
 @media(max-width:560px){.fw-goal-plan-row{grid-template-columns:1fr 105px}.fw-front-philosophy{font-size:14px}.fw-why-encouragement{font-size:13px}}
 </style>
-<script id="fwFinalFlowAndWhyScript">
-(function(){
-  const WHY_PREFIX='fw_my_why_';
-  function userKey(){
-    const u=(window.currentUser&&window.currentUser.username)||localStorage.getItem('fw_prototype_nickname')||localStorage.getItem('fw_user_nickname')||'user';
-    return String(u).trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'_')||'user';
-  }
-  function getWhy(){return (localStorage.getItem(WHY_PREFIX+userKey())||localStorage.getItem('fw_my_why')||'').trim()}
-  function name(){return (window.currentUser&&window.currentUser.name)||localStorage.getItem('fw_prototype_nickname')||'there'}
-  function encouragement(why){
-    const w=why.toLowerCase();
-    if(!why) return 'You don’t have to figure everything out today. Let’s take care of one payday at a time.';
-    if(/travel|trip|japan|vacation|holiday/.test(w)) return 'Every small plan gets you closer to the places you want to see. Your future self will thank you — and your present self still gets to enjoy today.';
-    if(/home|house|aircon|room|laptop|car|buy|purchase/.test(w)) return 'You’re building toward something real. Let’s make progress without forgetting to leave a little room for life today.';
-    if(/secure|security|emergency|worry|debt|debt-free|stress|peace/.test(w)) return 'You’re creating a little more breathing room for yourself. Small steps count — you don’t need to solve everything at once.';
-    if(/enjoy|fun|guilt|guilt-free|spend|treat|hobby/.test(w)) return 'Taking care of tomorrow doesn’t mean saying no to today. Let’s make room for both.';
-    if(/family|parents|mom|dad|kids|child/.test(w)) return 'You’re building something that matters to the people you love. One thoughtful payday at a time.';
-    return 'You said you want your money to help with something that matters to you. Let’s keep that in sight while we plan today.';
-  }
-  function refresh(){
-    const hero=document.querySelector('.hero'); if(!hero)return;
-    let ph=hero.querySelector('.fw-front-philosophy');
-    const h=hero.querySelector('h1');
-    if(h && !ph){ph=document.createElement('div');ph.className='fw-front-philosophy';ph.textContent='Your future self will thank you. Your present self gets to enjoy.';h.insertAdjacentElement('afterend',ph)}
-    let box=hero.querySelector('.fw-why-encouragement');
-    if(!box){box=document.createElement('div');box.className='fw-why-encouragement';const g=hero.querySelector('#personalGreeting'); if(g)g.insertAdjacentElement('afterend',box);}
-    const why=getWhy(); box.innerHTML=`<b>YOUR WHY ✦</b>${escapeHtml(encouragement(why))}`;
-  }
-  function escapeHtml(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-  window.fwRefreshWhy=refresh;
-  document.addEventListener('DOMContentLoaded',function(){[0,250,800,1600].forEach(ms=>setTimeout(refresh,ms));});
-  document.addEventListener('click',function(e){
-    if(e.target.closest('#fwWhySave')) setTimeout(refresh,100);
-    if(e.target.closest('#fwWhySkip')) setTimeout(refresh,100);
-  });
-})();
-</script>
-
-
-
 <style id="fwFinalGoalExperience">
 /* Final goal language: Future Wealth tracks a plan, not a bank balance. */
 .goal-money strong{font-size:25px!important}
@@ -3612,6 +3701,189 @@ window.fwSavePlanImage=function(){
       out.insertAdjacentHTML('afterbegin',`<div class="fw-mind-response"><b>Got it, ${String(name()).replace(/[&<>"']/g,'')} 💙</b><br>You don't have to solve this right now. I've got the thought with you. If you want, we can look at it together or simply keep it here for later.<div class="fw-mind-actions"><button type="button" onclick="openGuide();closeNotes()">Help me think it through</button><button type="button" onclick="closeNotes()">Just keep this for me</button></div></div>`);
     }
   };
+})();
+</script>
+
+
+<style id="fwWhyConnectionFix">
+.fw-why-user{display:block;margin:2px 0 0;color:#24334d;font:650 15px/1.55 "Inter",Arial,sans-serif;font-style:italic;max-width:620px}
+.fw-why-nudge{display:block;margin-top:5px;color:#718397;font:600 12px/1.5 "Inter",Arial,sans-serif;max-width:620px}
+</style>
+<script id="fwWhyConnectionFixScript">
+(function(){
+  function slug(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'_')||'user'}
+  function keys(){
+    const u=window.currentUser||{};
+    const vals=[u.username,u.name,localStorage.getItem('fw_prototype_nickname'),localStorage.getItem('fw_user_nickname')].filter(Boolean);
+    const out=['fw_my_why'];
+    vals.forEach(v=>out.push('fw_my_why_'+slug(v)));
+    return [...new Set(out)];
+  }
+  function readWhy(){
+    for(const k of keys()){
+      const v=(localStorage.getItem(k)||'').trim();
+      if(v)return v;
+    }
+    return (localStorage.getItem('fw_my_why_raw')||'').trim();
+  }
+  function encouragement(why){
+    const s=(why||'').trim();
+    if(!s){
+      return 'You do not have to figure everything out today. We can take the next step together. ✦';
+    }
+
+    const lower=s.toLowerCase();
+
+    // Use the user's full thought as the source of the response.
+    // These are intentionally broad themes, but the response always points
+    // back to the actual Why instead of replacing it with a generic message.
+    let response='That matters to you for a reason. You do not have to build it all at once — one payday, one choice, one piece at a time. ✦';
+
+    if(/family|mom|mother|dad|father|parents|children|kids|loved ones|provide|help them|support them/.test(lower)){
+      response='What you wrote is bigger than a number — you are building toward something that matters to the people you love. You do not have to carry it all at once. One piece at a time. 💙';
+    }else if(/home|house|room|aircon|comfortable|comfort|rest|peace|space/.test(lower)){
+      response='You are building toward a life that feels more comfortable and more like yours. You do not have to get there all at once — every intentional payday is one step closer. ✦';
+    }else if(/travel|trip|japan|vacation|holiday|explore|adventure/.test(lower)){
+      response='You are making room for experiences you genuinely want to have. You can care for your future while still giving yourself something to look forward to. ✈️';
+    }else if(/secure|security|safe|emergency|unexpected|debt|worry|worried|stress|peace of mind/.test(lower)){
+      response='You are working toward feeling more secure and less worried about what comes next. You do not need to solve everything today — a little more breathing room is still progress. 💙';
+    }else if(/enjoy|guilt|guilty|freedom|fun|life|spend|happiness|happy|live/.test(lower)){
+      response='You want your money to support your future without taking the joy out of your present. That balance matters. Let’s make room for both. ✦';
+    }else if(/school|education|tuition|study|degree|course|learn/.test(lower)){
+      response='You are putting your money toward a future you care about. You do not have to fund the whole journey at once — each step counts. ✦';
+    }else if(/business|businesses|work|career|job|income|earn|grow|freelance/.test(lower)){
+      response='You are using your money to create more possibilities for the life you want. Keep the bigger reason in sight while you take the next practical step. ✦';
+    }
+
+    return response;
+  }
+  function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function render(){
+    const hero=document.querySelector('.hero'); if(!hero)return;
+    let box=hero.querySelector('.fw-why-encouragement');
+    if(!box){
+      box=document.createElement('div'); box.className='fw-why-encouragement';
+      const g=hero.querySelector('#personalGreeting');
+      if(g)g.insertAdjacentElement('afterend',box); else hero.prepend(box);
+    }
+    const why=readWhy();
+    box.innerHTML='<b>YOUR WHY ✦</b>'+
+      (why?'<div class="fw-why-user">“'+esc(why)+'”</div>':'')+
+      '<div class="fw-why-nudge">'+esc(encouragement(why))+'</div>'+
+      '<button type="button" class="fw-why-inline-edit" onclick="window.openWhy&&window.openWhy(true)">Edit</button>';
+  }
+  function saveAndRender(){
+    const input=document.getElementById('fwWhyInput');
+    const raw=(input&&input.value||'').trim(); if(!raw)return;
+    keys().forEach(k=>localStorage.setItem(k,raw));
+    localStorage.setItem('fw_my_why_raw',raw);
+    localStorage.setItem('fw_my_why',raw);
+    localStorage.setItem('fw_my_why_seen','1');
+    render();
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    render();
+    setTimeout(render,300); setTimeout(render,900); setTimeout(render,1600);
+    document.addEventListener('click',function(e){
+      if(e.target.closest('#fwWhySave'))setTimeout(function(){saveAndRender();},80);
+      if(e.target.closest('#fwWhySkip'))setTimeout(render,120);
+    });
+  });
+  window.fwRenderWhy=render;
+})();
+</script>
+
+<style id="fwWhyAuthoritativeStyles">
+.fw-why-encouragement{max-width:700px!important;margin:0 0 18px!important;padding:3px 0 0!important;background:transparent!important;border:0!important}
+.fw-why-encouragement b{display:block!important;margin:0 0 7px!important;color:#718397!important;font:800 9px/1.2 Inter,Arial,sans-serif!important;letter-spacing:.15em!important}
+.fw-why-user{display:block!important;color:#dbe7f2!important;font:650 17px/1.5 Inter,Arial,sans-serif!important;font-style:italic!important;max-width:680px!important}
+.fw-why-nudge{display:block!important;margin-top:6px!important;color:#718397!important;font:600 12px/1.5 Inter,Arial,sans-serif!important;max-width:680px!important}
+.fw-why-inline-edit{display:block!important;margin-top:6px!important;padding:0!important;border:0!important;background:transparent!important;color:#176bd6!important;font:800 11px/1.2 Inter,Arial,sans-serif!important;cursor:pointer!important}
+</style>
+<style id="fwWhyPersonalizedFinalStyles">
+.fw-why-encouragement{max-width:720px!important;margin:0 0 18px!important;padding:2px 0 0!important;background:transparent!important;border:0!important}
+.fw-why-encouragement b{display:block!important;margin:0 0 6px!important;color:#718397!important;font:800 9px/1.2 Inter,Arial,sans-serif!important;letter-spacing:.15em!important}
+.fw-why-user{display:block!important;color:#e3edf5!important;font:650 17px/1.5 Inter,Arial,sans-serif!important;font-style:italic!important;max-width:700px!important}
+.fw-why-nudge{display:block!important;margin-top:7px!important;color:#9aabba!important;font:600 13px/1.5 Inter,Arial,sans-serif!important;max-width:700px!important}
+.fw-why-inline-edit{display:block!important;margin-top:7px!important;padding:0!important;border:0!important;background:transparent!important;color:#69a9ff!important;font:800 11px/1.2 Inter,Arial,sans-serif!important;cursor:pointer!important}
+</style>
+<script id="fwWhyEditFixScript">
+document.addEventListener('DOMContentLoaded', function(){
+  document.addEventListener('click', function(e){
+    const edit = e.target && e.target.closest ? e.target.closest('.fw-why-inline-edit') : null;
+    if(!edit) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const modal=document.getElementById('fwWhyModal');
+    const input=document.getElementById('fwWhyInput');
+    if(!modal || !input) return;
+
+    // Always load the user's saved Why before editing.
+    input.value =
+      localStorage.getItem('fw_my_why_raw') ||
+      localStorage.getItem('fw_my_why') ||
+      '';
+
+    modal.style.display='';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+
+    setTimeout(function(){
+      input.focus();
+      input.setSelectionRange(input.value.length,input.value.length);
+    },80);
+  });
+});
+</script>
+
+
+<style id="fwGoalClickFix">
+#lifeGoals .goal-add,
+#lifeGoals .goals-empty,
+#planGoals .goal-add{
+  position:relative;
+  z-index:3;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+}
+#goalEditor{
+  z-index:10000!important;
+  pointer-events:auto!important;
+}
+#goalEditor .sheet,
+#goalEditor button,
+#goalEditor input{
+  pointer-events:auto!important;
+}
+</style>
+<script id="fwGoalClickFixScript">
+(function(){
+  function openGoalEditor(){
+    const overlay=document.getElementById('overlay');
+    if(overlay) overlay.style.display='none';
+    const editor=document.getElementById('goalEditor');
+    if(!editor) return false;
+    ['goalName','goalTarget','goalSaved'].forEach(function(id){
+      const el=document.getElementById(id);
+      if(el) el.value='';
+    });
+    editor.style.display='flex';
+    editor.setAttribute('aria-hidden','false');
+    setTimeout(function(){document.getElementById('goalName')?.focus()},60);
+    return false;
+  }
+
+  // One reliable handler for every Add Goal entry point.
+  document.addEventListener('click',function(e){
+    const add=e.target?.closest?.('#lifeGoals .goal-add, #lifeGoals .goals-empty, #planGoals .goal-add');
+    if(!add) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openGoalEditor();
+  },true);
+
+  window.fwAddGoal=openGoalEditor;
 })();
 </script>
 
