@@ -1488,7 +1488,7 @@ body,button,input,textarea,select,.sub,.caption,.eyebrow,.profilebar,
 /* Payday card = next block drop */
 .payday-card{position:relative!important;padding-top:54px!important}
 .payday-card:before{
-  content:"NEXT BLOCK DROP";
+  content:"NEXT PAYDAY";
   position:absolute;
   left:24px;top:21px;
   font:800 11px/1 var(--ui-font)!important;
@@ -1957,6 +1957,219 @@ footer{padding:6px 16px 100px!important}
 .tower-hint{grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
 @media(prefers-reduced-motion:reduce){.blk{animation:none!important}}
 </style>
+
+
+<style id="fwGoalFixes">
+.completed-goals-heading{grid-column:1/-1;margin-top:18px;padding:18px 4px 6px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.completed-goals-heading span{font:800 10px/1.2 Inter,Arial,sans-serif;letter-spacing:.16em;color:var(--accent,#21dc7a)}
+.completed-goals-heading b{font:800 20px/1.2 Inter,Arial,sans-serif;color:inherit}
+.completed-goals-heading small{color:var(--muted);font-size:12px}
+.dream-card.completed .goal-track i{width:100%!important}
+.dream-card.completed .fw-real-piece.open{opacity:0!important;pointer-events:none}
+.dream-card.completed .fw-piece-status{background:var(--accent,#21dc7a)!important;color:#08251a!important}
+@media(max-width:720px){.completed-goals-heading{grid-column:1}}
+</style>
+
+<style id="fwVisibleInputFix">
+/* Make all typed text clearly visible */
+#testerName,
+#fwWhyInput,
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea,
+select{
+  color:#0d1735 !important;
+  -webkit-text-fill-color:#0d1735 !important;
+  caret-color:#176bd6 !important;
+  background:#ffffff !important;
+  opacity:1 !important;
+  font-family:"Inter",Arial,sans-serif !important;
+  font-weight:600 !important;
+}
+#testerName::placeholder,
+#fwWhyInput::placeholder,
+input::placeholder,
+textarea::placeholder{
+  color:#7a8ca0 !important;
+  -webkit-text-fill-color:#7a8ca0 !important;
+  opacity:1 !important;
+  font-weight:500 !important;
+}
+#testerName:focus,
+#fwWhyInput:focus,
+input:focus,
+textarea:focus,
+select:focus{
+  outline:3px solid rgba(23,107,214,.15) !important;
+  border-color:#176bd6 !important;
+}
+
+/* Keep the My Why question simple and human */
+#fwWhyTitle{
+  font-family:"Bowlby One SC","Inter",sans-serif !important;
+}
+</style>
+
+<script id="fwWhyCopyFix">
+document.addEventListener('DOMContentLoaded', function(){
+  const title=document.getElementById('fwWhyTitle');
+  const input=document.getElementById('fwWhyInput');
+  if(title) title.textContent='WHAT DO YOU WANT YOUR MONEY TO HELP YOU DO?';
+  if(input) input.placeholder='Example: Travel to Japan, feel more secure, buy things I enjoy, or worry less about money.';
+});
+
+/* Keep personalized version readable instead of awkward "make possible" wording */
+if(window.openWhy){
+  const originalOpenWhy=window.openWhy;
+}
+</script>
+
+
+<style id="fwMicroInstructionStyles">
+.fw-micro-help{
+  margin:6px 0 8px;
+  font:600 12px/1.4 "Inter",Arial,sans-serif;
+  color:#6a7d91;
+}
+.fw-micro-help b{color:#176bd6;font-weight:800}
+</style>
+<script id="fwMicroInstructions">
+document.addEventListener('DOMContentLoaded', function(){
+  function addHelp(input, text){
+    if(!input || input.dataset.fwHelpAdded) return;
+    input.dataset.fwHelpAdded='1';
+    const help=document.createElement('div');
+    help.className='fw-micro-help';
+    help.innerHTML=text;
+    input.parentNode.insertBefore(help,input);
+  }
+
+  addHelp(document.getElementById('testerName'),
+    '<b>Type your name here.</b> We’ll use it to personalize your space.');
+
+  addHelp(document.getElementById('fwWhyInput'),
+    '<b>Write here.</b> What would you like your money to help you do?');
+
+  document.querySelectorAll('input[type="number"]').forEach(function(input){
+    const context=((input.name||'')+' '+(input.id||'')+' '+(input.placeholder||'')).toLowerCase();
+    let text='<b>Enter an amount here.</b>';
+    if(context.includes('pay') || context.includes('income')) text='<b>Enter your payday amount here.</b>';
+    else if(context.includes('goal') || context.includes('target')) text='<b>Enter the amount you want to reach.</b>';
+    else if(context.includes('saved')) text='<b>Enter how much you already have for this goal.</b>';
+    addHelp(input,text);
+  });
+
+  document.querySelectorAll('input[type="file"]').forEach(function(input){
+    addHelp(input,'<b>Click here to upload a photo.</b> It will reveal piece by piece as you reach your goal.');
+  });
+});
+</script>
+
+
+
+
+
+
+<style id="fwFinalClarityFix">
+#fwWhyModal .fw-why-panel,
+#fwWhyModal .fw-why-panel *{
+  text-shadow:none !important;
+}
+#fwWhyModal .fw-why-panel h2,
+#fwWhyModal #fwWhyTitle{
+  color:#0d1735 !important;
+  -webkit-text-fill-color:#0d1735 !important;
+  opacity:1 !important;
+}
+#fwWhyModal .fw-why-label{
+  color:#61758c !important;
+  -webkit-text-fill-color:#61758c !important;
+}
+#fwWhyModal .fw-why-panel p{
+  color:#536980 !important;
+  -webkit-text-fill-color:#536980 !important;
+}
+
+</style>
+
+
+
+
+<style id="fwWhyOnboardingPolish">
+#fwWhyModal .fw-why-panel h2,#fwWhyModal #fwWhyTitle{
+  color:#0d1735!important;-webkit-text-fill-color:#0d1735!important;opacity:1!important
+}
+#fwWhyModal .fw-why-panel p{color:#536980!important;-webkit-text-fill-color:#536980!important}
+.fw-polished-preview{
+  display:none;margin-top:12px;padding:12px 14px;border-radius:12px;
+  background:#eaf6ff;border:1px solid #c9e2f2;color:#243b55;
+  font:600 13px/1.5 "Inter",Arial,sans-serif;
+}
+</style>
+
+
+
+<style id="fwClearPaydayStyles">
+.fw-payday-help{
+  margin:8px 0 14px;
+  font:600 13px/1.5 "Inter",Arial,sans-serif;
+  color:#60748a;
+}
+.fw-step-label{
+  margin-bottom:7px;
+  font:800 11px/1.2 "Inter",Arial,sans-serif;
+  letter-spacing:.13em;text-transform:uppercase;color:#176bd6;
+}
+</style>
+<script id="fwClearPaydayFlow">
+document.addEventListener('DOMContentLoaded',function(){
+  /* Make the main payday CTA self-explanatory. */
+  document.querySelectorAll('button,a').forEach(function(el){
+    const t=(el.textContent||'').trim().toLowerCase();
+    if(t==='i got paid' || t==='plan payday'){
+      el.textContent='Plan my payday →';
+    }
+  });
+
+  /* Add one short explanation to the payday card, not another big instruction card. */
+  const card=document.querySelector('.payday-card');
+  if(card && !card.querySelector('.fw-payday-help')){
+    const help=document.createElement('div');
+    help.className='fw-payday-help';
+    help.textContent='When your pay comes in, start here. We’ll help you cover what matters, add to savings and goals, and see what’s left for you.';
+    const btn=[...card.querySelectorAll('button,a')].find(x=>/payday|paid/i.test(x.textContent||''));
+    if(btn) card.insertBefore(help,btn);
+    else card.appendChild(help);
+  }
+
+  /* Clarify the first paycheck amount field wherever the existing payday sheet opens. */
+  document.addEventListener('click',function(e){
+    const trigger=e.target?.closest?.('button,a');
+    if(!trigger || !/plan my payday|got paid/i.test(trigger.textContent||'')) return;
+
+    setTimeout(function(){
+      const sheet=[...document.querySelectorAll('.sheet,[role="dialog"],.modal')].find(x=>{
+        const st=getComputedStyle(x);
+        return st.display!=='none' && st.visibility!=='hidden';
+      });
+      if(!sheet) return;
+
+      const amount=[...sheet.querySelectorAll('input[type="number"]')][0];
+      if(amount){
+        amount.placeholder='Enter amount received';
+        const host=amount.parentElement;
+        if(host && !host.querySelector('.fw-step-label')){
+          const step=document.createElement('div');
+          step.className='fw-step-label';
+          step.textContent='Step 1 · Your payday';
+          host.insertBefore(step,amount);
+        }
+      }
+    },80);
+  });
+});
+</script>
 
 </head>
 <body>
@@ -2519,76 +2732,51 @@ function fwAddGoal(){
     const saved=Number(card.dataset.saved||0);
     const target=Math.max(1,Number(card.dataset.target||1));
     const pct=Math.max(0,Math.min(100,(saved/target)*100));
-    const unlocked=Math.round((pct/100)*20);
-    card.querySelectorAll('.fw-real-piece').forEach((piece,i)=>{
-      piece.classList.toggle('open',i<unlocked);
-    });
+    const unlocked=pct>=100 ? 20 : Math.floor((pct/100)*20);
+    card.querySelectorAll('.fw-real-piece').forEach((piece,i)=>piece.classList.toggle('open',i<unlocked));
     const status=card.querySelector('.fw-piece-status');
-    if(status) status.textContent=pct>=100 ? 'BUILD COMPLETE ✦' : `${unlocked} / 20 PIECES UNLOCKED`;
+    if(status) status.textContent=pct>=100 ? 'GOAL COMPLETE ✦ PHOTO REVEALED' : `${unlocked} / 20 PIECES REVEALED`;
+  }
+
+  function compressPhoto(file,done){
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const max=1200, scale=Math.min(1,max/Math.max(img.width,img.height));
+        const c=document.createElement('canvas');
+        c.width=Math.max(1,Math.round(img.width*scale)); c.height=Math.max(1,Math.round(img.height*scale));
+        c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+        done(c.toDataURL('image/jpeg',.78));
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 
   function installPuzzle(card){
-    if(card.querySelector('.fw-real-puzzle')){ refreshPuzzle(card); return; }
-    const art=card.querySelector('.goal-art');
-    if(!art)return;
-
-    const grid=document.createElement('div');
-    grid.className='fw-real-puzzle';
-    for(let i=0;i<20;i++){
-      const piece=document.createElement('i');
-      piece.className='fw-real-piece';
-      grid.appendChild(piece);
+    const art=card.querySelector('.goal-art'); if(!art)return;
+    if(!card.querySelector('.fw-real-puzzle')){
+      const grid=document.createElement('div'); grid.className='fw-real-puzzle';
+      for(let i=0;i<20;i++){const piece=document.createElement('i');piece.className='fw-real-piece';grid.appendChild(piece)}
+      art.appendChild(grid);
+      const status=document.createElement('div');status.className='fw-piece-status';art.appendChild(status);
+      const control=document.createElement('label');control.className='fw-photo-control';
+      control.innerHTML=(art.querySelector('.fw-real-photo')?'CHANGE PHOTO':'UPLOAD PHOTO')+'<input type="file" accept="image/*">';
+      art.appendChild(control);
+      control.querySelector('input').addEventListener('change',function(){
+        const file=this.files&&this.files[0]; if(!file)return;
+        compressPhoto(file,data=>{
+          const i=Number(card.dataset.i);
+          if(typeof window.fwSaveGoalPhoto==='function') window.fwSaveGoalPhoto(i,data);
+        });
+      });
     }
-    art.appendChild(grid);
-
-    const status=document.createElement('div');
-    status.className='fw-piece-status';
-    art.appendChild(status);
-
-    const control=document.createElement('label');
-    control.className='fw-photo-control';
-    control.innerHTML='UPLOAD PHOTO<input type="file" accept="image/*">';
-    art.appendChild(control);
-
-    const input=control.querySelector('input');
-    input.addEventListener('change',function(){
-      const file=this.files && this.files[0];
-      if(!file)return;
-      let img=art.querySelector('.fw-real-photo');
-      if(!img){
-        img=document.createElement('img');
-        img.className='fw-real-photo';
-        art.insertBefore(img,art.firstChild);
-      }
-      img.src=URL.createObjectURL(file);
-      control.childNodes[0].nodeValue='CHANGE PHOTO';
-      refreshPuzzle(card);
-    });
-
     refreshPuzzle(card);
   }
-
-  function refreshAll(){
-    document.querySelectorAll('#goalGrid .dream-card').forEach(installPuzzle);
-  }
-
+  function refreshAll(){document.querySelectorAll('#goalGrid .dream-card').forEach(installPuzzle)}
   document.addEventListener('DOMContentLoaded',refreshAll);
   window.fwRefreshGoalPuzzles=refreshAll;
-
-  const originalFund=window.fwFundGoal;
-  if(typeof originalFund==='function'){
-    window.fwFundGoal=function(btn){
-      originalFund(btn);
-      setTimeout(refreshAll,0);
-    };
-  }
-  const originalEdit=window.fwEditGoal;
-  if(typeof originalEdit==='function'){
-    window.fwEditGoal=function(btn){
-      originalEdit(btn);
-      setTimeout(refreshAll,0);
-    };
-  }
 })();
 </script>
 
@@ -2744,54 +2932,68 @@ const esc=t=>String(t).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;',
 const P=n=>'₱'+Math.round(n).toLocaleString('en-PH');
 let goals=[];
 const load=()=>{try{goals=JSON.parse(localStorage.getItem(K())||'[]')}catch(e){goals=[]}};
-const store=()=>{try{localStorage.setItem(K(),JSON.stringify(goals))}catch(e){}};
-function drawGoals(){
-  const g=document.getElementById('goalGrid');if(!g)return;
-  g.innerHTML=goals.length?goals.map((x,i)=>{const pct=Math.min(100,Math.round(x.saved/x.target*100));
-    return `<article class="dream-card" data-goal="${esc(x.name)}" data-target="${x.target}" data-saved="${x.saved}" data-i="${i}">
-    <div class="goal-art custom-art" aria-hidden="true"><div class="goal-art-label">${esc(x.name).toUpperCase()}</div></div>
-    <div class="goal-body"><div class="goal-top"><div><span class="goal-kicker">YOUR GOAL</span><h3>${esc(x.name)}</h3></div><button class="goal-edit" onclick="editGoalI(${i})">Edit</button></div>
+const store=()=>{try{localStorage.setItem(K(),JSON.stringify(goals));return true}catch(e){alert('This photo could not be saved in this browser. Try a smaller photo.');return false}};
+function goalCard(x,i){
+  const pct=Math.min(100,Math.round((Number(x.saved)||0)/Math.max(1,Number(x.target)||1)*100));
+  const done=pct>=100;
+  const photo=x.photo?`<img class="fw-real-photo" src="${x.photo}" alt="${esc(x.name)} goal photo">`:'';
+  return `<article class="dream-card${done?' completed':''}" data-goal="${esc(x.name)}" data-target="${x.target}" data-saved="${x.saved}" data-i="${i}">
+    <div class="goal-art custom-art">${photo}<div class="goal-art-label">${done?'COMPLETE · ':''}${esc(x.name).toUpperCase()}</div></div>
+    <div class="goal-body"><div class="goal-top"><div><span class="goal-kicker">${done?'COMPLETED BUILD':'YOUR GOAL'}</span><h3>${esc(x.name)}</h3></div><button class="goal-edit" onclick="editGoalI(${i})">Edit</button></div>
     <div class="goal-money"><strong>${P(x.saved)}</strong><span>of ${P(x.target)}</span></div>
     <div class="goal-track"><i style="width:${pct}%"></i></div>
-    <div class="goal-foot"><span>${pct}% there</span><button onclick="fundGoalI(${i})">Add money</button></div></div></article>`}).join('')
-   :`<div class="goals-empty" onclick="fwAddGoal()"><div class="ghosts"><i>＋</i><i></i><i></i></div><b>Your first goal goes here</b>Pick something you’re excited about. You choose the name and the amount.</div>`;
+    <div class="goal-foot"><span>${done?'100% complete ✦':pct+'% there'}</span>${done?`<button onclick="deleteGoalI(${i})">Remove</button>`:`<button onclick="fundGoalI(${i})">Add money</button>`}</div></div></article>`;
+}
+function drawGoals(){
+  const g=document.getElementById('goalGrid');if(!g)return;
+  if(!goals.length){g.innerHTML=`<div class="goals-empty" onclick="fwAddGoal()"><div class="ghosts"><i>＋</i><i></i><i></i></div><b>Your first goal goes here</b>Pick something you’re excited about. You choose the name and the amount.</div>`}
+  else{
+    const active=[],done=[];goals.forEach((x,i)=>((Number(x.saved)||0)>=Math.max(1,Number(x.target)||1)?done:active).push([x,i]));
+    g.innerHTML=active.map(([x,i])=>goalCard(x,i)).join('')+
+      (done.length?`<div class="completed-goals-heading"><span>COMPLETED</span><b>Your finished goals stay here.</b><small>The full photo remains revealed so you can look back at what you achieved.</small></div>${done.map(([x,i])=>goalCard(x,i)).join('')}`:'');
+  }
   try{window.fwRefreshGoalPuzzles&&window.fwRefreshGoalPuzzles()}catch(e){}
   drawPlanGoals();
 }
 window.fwAddGoal=function(){['goalName','goalTarget','goalSaved'].forEach(i=>document.getElementById(i).value='');document.getElementById('goalEditor').style.display='flex'};
 window.saveGoal=function(){const n=document.getElementById('goalName').value.trim(),t=Number(document.getElementById('goalTarget').value),s=Number(document.getElementById('goalSaved').value)||0;
   if(!n||!(t>0)){alert('Give it a name and a target amount.');return}
-  goals.push({name:n,target:t,saved:Math.min(s,t)});store();document.getElementById('goalEditor').style.display='none';drawGoals()};
-window.editGoalI=function(i){const x=goals[i];const n=prompt('Goal name',x.name);if(n===null)return;const t=prompt('Target amount',x.target);if(t===null)return;
-  if(n.trim())x.name=n.trim();const v=Number(String(t).replace(/[^0-9.]/g,''));if(v>0)x.target=v;
-  if(confirm('Remove this goal instead? Press Cancel to keep it.'))goals.splice(i,1);store();drawGoals()};
+  goals.push({name:n,target:t,saved:Math.max(0,Math.min(s,t)),photo:''});store();document.getElementById('goalEditor').style.display='none';drawGoals()};
+window.editGoalI=function(i){const x=goals[i];if(!x)return;
+  const n=prompt('Goal name',x.name);if(n===null)return;
+  const t=prompt('Target amount',x.target);if(t===null)return;
+  const saved=prompt('Amount saved so far',x.saved);if(saved===null)return;
+  const tv=Number(String(t).replace(/[^0-9.]/g,'')),sv=Number(String(saved).replace(/[^0-9.]/g,''));
+  if(n.trim())x.name=n.trim();if(tv>0)x.target=tv;if(Number.isFinite(sv)&&sv>=0)x.saved=Math.min(sv,x.target);
+  store();drawGoals()};
+window.deleteGoalI=function(i){if(!goals[i])return;if(confirm('Remove '+goals[i].name+' from your goal history?')){goals.splice(i,1);store();drawGoals()}};
 window.fundGoalI=function(i){const v=prompt('How much would you like to add to '+goals[i].name+'?','1000');if(v===null)return;const a=Number(String(v).replace(/[^0-9.]/g,''));
   if(a>0){goals[i].saved=Math.min(goals[i].target,goals[i].saved+a);store();drawGoals()}};
-/* payday plan: one input per goal */
+window.fwSaveGoalPhoto=function(i,data){if(!goals[i])return;goals[i].photo=data;if(store())drawGoals()};
+/* payday plan: only active goals */
 function drawPlanGoals(){const box=document.getElementById('planGoals');if(!box)return;
-  box.innerHTML=goals.length?goals.map((x,i)=>`<div class="field"><label>${esc(x.name)}</label><input type="number" value="0" class="gIn" data-i="${i}" oninput="updateFinal()"></div>`).join(''):`<div class="goal-hint">No goals yet. You can add one from Home whenever you like.</div>`}
-const gv=()=>[...document.querySelectorAll('.gIn')].map(e=>Number(e.value)||0);
+  const active=goals.map((x,i)=>({x,i})).filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1));
+  box.innerHTML=active.length?active.map(o=>`<div class="field"><label>${esc(o.x.name)}</label><input type="number" value="0" class="gIn" data-i="${o.i}" oninput="updateFinal()"></div>`).join(''):`<div class="goal-hint">No active goals right now. Add a new one whenever something matters to you.</div>`}
+const gv=()=>[...document.querySelectorAll('.gIn')].map(e=>({i:Number(e.dataset.i),a:Number(e.value)||0}));
 const V=id=>Number((document.getElementById(id)||{}).value)||0;
 window.buildSuggestion=function(){const days=Math.max(1,daysUntilPayday());
-  if(remainder<=0){suggestion={save:0,enjoy:0,goals:[],available:0};advisorLead.textContent='This paycheck took care of life. That still counts as progress.';whyPlan.textContent='Your goals haven’t gone anywhere. We can look again next payday.';suggestGrid.innerHTML='';return}
-  const n=goals.length,hasG=n>0&&remainder>=2000;
-  const available=Math.round(remainder*(hasG?.5:.65)),sav=Math.round(remainder*.25),enjoy=Math.round(remainder*(hasG?.1:.1));
-  const gs=hasG?goals.map((x,i)=>i<n-1?Math.round((remainder-available-sav-enjoy)/n):remainder-available-sav-enjoy-Math.round((remainder-available-sav-enjoy)/n)*(n-1)):goals.map(()=>0);
-  suggestion={save:sav,enjoy,goals:gs,available:remainder-sav-enjoy-gs.reduce((a,b)=>a+b,0)};
+  if(remainder<=0){suggestion={save:0,enjoy:0,goals:{},available:0};advisorLead.textContent='This paycheck took care of life. That still counts as progress.';whyPlan.textContent='Your goals haven’t gone anywhere. We can look again next payday.';suggestGrid.innerHTML='';return}
+  const active=goals.map((x,i)=>({x,i})).filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1)),n=active.length,hasG=n>0&&remainder>=2000;
+  const available=Math.round(remainder*(hasG?.5:.65)),sav=Math.round(remainder*.25),enjoy=Math.round(remainder*.1),pool=remainder-available-sav-enjoy;
+  const gm={};active.forEach((o,j)=>gm[o.i]=hasG?(j<n-1?Math.round(pool/n):pool-Math.round(pool/n)*(n-1)):0);
+  suggestion={save:sav,enjoy,goals:gm,available:remainder-sav-enjoy-Object.values(gm).reduce((a,b)=>a+b,0)};
   advisorLead.textContent=`You have ${P(remainder)} after expenses and ${days} day${days===1?'':'s'} until payday. Here’s one gentle starting point. It’s a suggestion, not a rule.`;
-  suggestGrid.innerHTML=[['Savings',sav],['Enjoy',enjoy],...goals.map((x,i)=>[esc(x.name),gs[i]]),['Keep available',suggestion.available]].map(x=>`<div class="suggest-chip">${x[0]}<b>${P(x[1])}</b></div>`).join('');
+  suggestGrid.innerHTML=[['Savings',sav],['Enjoy',enjoy],...active.map(o=>[esc(o.x.name),gm[o.i]]),['Keep available',suggestion.available]].map(x=>`<div class="suggest-chip">${x[0]}<b>${P(x[1])}</b></div>`).join('');
   whyPlan.textContent='It keeps breathing room for the days ahead, builds a little security, leaves room to enjoy life, and moves your goals forward. Change any amount.'};
-window.useSuggestion=function(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;document.querySelectorAll('.gIn').forEach((e,i)=>e.value=(suggestion.goals||[])[i]||0);updateFinal()};
-window.updateFinal=function(){const used=V('saveInput')+V('enjoyInput')+gv().reduce((a,b)=>a+b,0),left=remainder-used;
-  finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));
-  stageAdvice.textContent=left<0?`This is ${P(-left)} over what is actually left. Adjust an amount until it fits.`:`${P(left)} stays flexible. The guide suggests; you decide.`};
+window.useSuggestion=function(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;document.querySelectorAll('.gIn').forEach(e=>e.value=(suggestion.goals||{})[Number(e.dataset.i)]||0);updateFinal()};
+window.updateFinal=function(){const used=V('saveInput')+V('enjoyInput')+gv().reduce((a,o)=>a+o.a,0),left=remainder-used;
+  finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));stageAdvice.textContent=left<0?`This is ${P(-left)} over what is actually left. Adjust an amount until it fits.`:`${P(left)} stays flexible. The guide suggests; you decide.`};
 window.confirmPlan=function(){
-  const expenses=selected.reduce((s,n)=>s+(Number(values[n])||0),0),s=V('saveInput'),e=V('enjoyInput'),g=gv(),gt=g.reduce((a,b)=>a+b,0),avail=remainder-s-e-gt;if(avail<0)return;
+  const expenses=selected.reduce((s,n)=>s+(Number(values[n])||0),0),s=V('saveInput'),e=V('enjoyInput'),alloc=gv(),gt=alloc.reduce((a,o)=>a+o.a,0),avail=remainder-s-e-gt;if(avail<0)return;
   planned.textContent=P(expenses);savings.textContent=P(s);enjoy.textContent=P(e);available.textContent=P(avail);usable.textContent=P(e+avail);saveTotal.textContent=P(s);
   saveMsg.textContent=s?'You started building breathing room.':'No savings yet. When there’s room, we’ll start.';
-  g.forEach((a,i)=>{if(a>0&&goals[i])goals[i].saved=Math.min(goals[i].target,goals[i].saved+a)});store();drawGoals();
-  guideText.textContent=`You handled ${P(expenses)} in expenses first. From the ${P(remainder)} left, you chose what to save, enjoy, put toward goals, and keep flexible.`;
-  closePayday()};
+  alloc.forEach(o=>{if(o.a>0&&goals[o.i])goals[o.i].saved=Math.min(goals[o.i].target,goals[o.i].saved+o.a)});store();drawGoals();
+  guideText.textContent=`You handled ${P(expenses)} in expenses first. From the ${P(remainder)} left, you chose what to save, enjoy, put toward goals, and keep flexible.`;closePayday()};
 load();drawGoals();
 })();
 </script>
@@ -2846,7 +3048,7 @@ function free(){const c=document.getElementById('freeCard');if(!c)return;
   let h;
   if(e>0){h=`<div class="eyebrow">Just for you</div><div class="big">${P(e)}</div><p>Yours to spend, no guilt. Bills, savings and goals are already taken care of.</p><span class="perday">about ${P(e/d)} a day until payday</span>${flex>0?`<div class="flex">Plus ${P(flex)} flexible if you ever need it.</div>`:''}`}
   else if(flex>0){h=`<div class="eyebrow">Just for you</div><div class="big">₱0</div><p>Nothing is set aside to enjoy yet. You have ${P(flex)} flexible. Want to set some aside for yourself?</p><button class="primary" style="margin-top:12px" onclick="openPayday()">Plan my paycheck</button>`}
-  else{h=`<div class="eyebrow">Just for you</div><div class="big">—</div><p>Once you plan your paycheck, this shows exactly how much you can spend on yourself without guilt.</p><button class="primary" style="margin-top:12px" onclick="openPayday()">I got paid</button>`}
+  else{h=`<div class="eyebrow">Just for you</div><div class="big">—</div><p>Once you plan your paycheck, this shows exactly how much you can spend on yourself without guilt.</p><button class="primary" style="margin-top:12px" onclick="openPayday()">Plan my payday</button>`}
   if(c.dataset.h!==h){c.innerHTML=h;c.dataset.h=h}}
 function all(){steps();free()}
 document.addEventListener('click',()=>setTimeout(all,120));setInterval(all,2000);all();
@@ -2885,4 +3087,192 @@ el.innerHTML=`<svg viewBox="0 0 400 340" role="img" aria-label="A floating islan
 const t=document.querySelector('.fw-unlock-float');if(t)el.appendChild(t);
 })();
 </script>
+
+<!-- FW_MY_WHY_START -->
+<style id="fwMyWhyStyles">
+  .fw-why-card{
+    margin-top:18px;padding:20px 22px;border:1px solid #c9dbe7;border-radius:16px;
+    background:rgba(255,255,255,.88);box-shadow:0 10px 25px rgba(13,23,53,.06);
+  }
+  .fw-why-label{font:800 11px/1.2 "Inter",Arial,sans-serif;letter-spacing:.14em;color:#65788d;text-transform:uppercase}
+  .fw-why-text{margin-top:8px;font:600 15px/1.55 "Inter",Arial,sans-serif;color:#24334d}
+  .fw-why-edit{margin-top:10px;border:0;background:transparent;color:#176bd6;font:700 13px "Inter",Arial,sans-serif;cursor:pointer;padding:0}
+  .fw-why-modal{position:fixed;inset:0;z-index:9999;display:none;place-items:center;padding:20px;background:rgba(8,18,38,.48);backdrop-filter:blur(8px)}
+  .fw-why-modal.show{display:grid}
+  .fw-why-panel{width:min(520px,100%);background:#f9fdff;border:1px solid #c7d9e6;border-radius:20px;padding:26px;box-shadow:0 25px 70px rgba(8,18,38,.25)}
+  .fw-why-panel h2{margin:0 0 8px;font-family:"Bowlby One SC","Inter",sans-serif;font-weight:400;font-size:28px;line-height:1.05;color:#0d1735}
+  .fw-why-panel p{margin:0 0 16px;font:500 14px/1.55 "Inter",Arial,sans-serif;color:#5a6c82}
+  .fw-why-panel textarea{width:100%;min-height:115px;resize:vertical;box-sizing:border-box;padding:14px;border:1px solid #b8ccda;border-radius:12px;background:#fff;font:500 15px/1.5 "Inter",Arial,sans-serif;color:#17253f;outline:none}
+  .fw-why-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:15px}
+  .fw-why-actions button{padding:11px 16px;border-radius:10px;font:800 13px "Inter",Arial,sans-serif;cursor:pointer}
+  .fw-why-skip{background:#eef5f9;border:1px solid #cad9e3;color:#41546b}
+  .fw-why-save{background:#176bd6;border:1px solid #176bd6;color:#fff}
+</style>
+
+<div class="fw-why-modal" id="fwWhyModal" aria-hidden="true">
+  <div class="fw-why-panel">
+    <div class="fw-why-label">Your Why</div>
+    <h2 id="fwWhyTitle">WHAT DO YOU WANT YOUR MONEY TO MAKE POSSIBLE?</h2>
+    <p>Tell us what matters to you. It can be a goal, more freedom, or simply enjoying your money with less worry.</p>
+    <textarea id="fwWhyInput" maxlength="240" placeholder="Example: Travel to Japan, feel more secure, buy things I enjoy, or worry less about money."></textarea>
+    <div class="fw-why-actions">
+      <button class="fw-why-skip" id="fwWhySkip" type="button">Skip for now</button>
+      <button class="fw-why-save" id="fwWhySave" type="button">Save my why</button>
+    </div>
+  </div>
+</div>
+
+<script id="fwMyWhyScript">
+(function(){
+  const WHY_KEY='fw_my_why';
+  const WHY_SEEN='fw_my_why_seen';
+
+  function getName(){
+    return (localStorage.getItem('fw_user_nickname') || localStorage.getItem('fw_prototype_nickname') ||
+      (window.currentUser && window.currentUser.name) || '').trim();
+  }
+  function why(){ return (localStorage.getItem(WHY_KEY)||'').trim(); }
+  }
+
+  function openWhy(editing){
+    const modal=document.getElementById('fwWhyModal');
+    const input=document.getElementById('fwWhyInput');
+    const title=document.getElementById('fwWhyTitle');
+    if(!modal||!input) return;
+    const name=getName();
+    title.textContent = name ? `WHAT DO YOU WANT YOUR MONEY TO HELP YOU DO, ${name.toUpperCase()}?` : 'WHAT DO YOU WANT YOUR MONEY TO HELP YOU DO?';
+    input.value=why();
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(()=>input.focus(),50);
+  }
+  function closeWhy(){
+    const modal=document.getElementById('fwWhyModal');
+    if(modal){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+
+    document.getElementById('fwWhySave')?.addEventListener('click',function(){
+      const value=(document.getElementById('fwWhyInput')?.value||'').trim();
+      if(value) localStorage.setItem(WHY_KEY,value);
+      localStorage.setItem(WHY_SEEN,'1');
+      closeWhy();
+    });
+    document.getElementById('fwWhySkip')?.addEventListener('click',function(){
+      localStorage.setItem(WHY_SEEN,'1'); closeWhy();
+    });
+
+    // Show after nickname onboarding has been completed, only once unless edited later.
+    document.addEventListener('click',function(e){
+      const b=e.target && e.target.closest ? e.target.closest('#fwNameStep button') : null;
+      if(b && !localStorage.getItem(WHY_SEEN)){
+        setTimeout(()=>openWhy(false),180);
+      }
+    });
+  });
+})();
+</script>
+<!-- FW_MY_WHY_END -->
+
+
+
+
+
+<script id="fwWhySaveFix">
+(function(){
+  const RAW='fw_my_why_raw', POLISHED='fw_my_why', SEEN='fw_my_why_seen';
+
+  function nickname(){
+    return (localStorage.getItem('fw_user_nickname') ||
+            localStorage.getItem('fw_prototype_nickname') || '').trim();
+  }
+  function polish(raw){
+    let s=(raw||'').trim().replace(/\s+/g,' ');
+    if(!s) return '';
+    s=s.charAt(0).toUpperCase()+s.slice(1);
+    if(!/[.!?]$/.test(s)) s+='.';
+    return s;
+  }
+  function closeModal(){
+    const modal=document.getElementById('fwWhyModal');
+    if(modal){
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
+      modal.style.display='none';
+    }
+  }
+  function prep(){
+    const title=document.getElementById('fwWhyTitle');
+    const p=document.querySelector('#fwWhyModal .fw-why-panel p');
+    const input=document.getElementById('fwWhyInput');
+    const save=document.getElementById('fwWhySave');
+    if(title) title.textContent=nickname()?`WHAT'S YOUR WHY, ${nickname().toUpperCase()}?`:"WHAT'S YOUR WHY?";
+    if(p) p.textContent="What do you want your money to help you do? Write it in your own words.";
+    if(input){
+      input.placeholder="Example: Travel, feel secure, and enjoy my money without guilt.";
+      input.value=localStorage.getItem(RAW)||localStorage.getItem(POLISHED)||'';
+      input.style.color='#0d1735';
+      input.style.webkitTextFillColor='#0d1735';
+    }
+    if(save) save.textContent='Save my why';
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    prep();
+
+    const save=document.getElementById('fwWhySave');
+    if(save){
+      // Replace node to remove conflicting legacy listeners.
+      const clean=save.cloneNode(true);
+      save.parentNode.replaceChild(clean,save);
+      clean.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        const input=document.getElementById('fwWhyInput');
+        const raw=(input?.value||'').trim();
+        if(!raw){
+          input?.focus();
+          if(input) input.placeholder='Write your why here first.';
+          return;
+        }
+        localStorage.setItem(RAW,raw);
+        localStorage.setItem(POLISHED,polish(raw));
+        localStorage.setItem(SEEN,'1');
+        clean.textContent='Saved ✓';
+        setTimeout(closeModal,350);
+      });
+    }
+
+    const skip=document.getElementById('fwWhySkip');
+    if(skip){
+      const cleanSkip=skip.cloneNode(true);
+      skip.parentNode.replaceChild(cleanSkip,skip);
+      cleanSkip.addEventListener('click',function(e){
+        e.preventDefault();
+        localStorage.setItem(SEEN,'1');
+        closeModal();
+      });
+    }
+
+    // After nickname is entered, open My Why only if it has not been answered.
+    document.addEventListener('click',function(e){
+      const btn=e.target?.closest?.('#fwNameStep button');
+      if(btn && !localStorage.getItem(SEEN)){
+        setTimeout(function(){
+          prep();
+          const modal=document.getElementById('fwWhyModal');
+          if(modal){
+            modal.style.display='';
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden','false');
+            setTimeout(()=>document.getElementById('fwWhyInput')?.focus(),80);
+          }
+        },180);
+      }
+    });
+  });
+})();
+</script>
+
 </body></html>
