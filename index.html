@@ -564,6 +564,34 @@ input,textarea,select{box-shadow:none!important}
 .fw-game-hint span{background:var(--fw-lime)!important;border-color:var(--fw-ink)!important;box-shadow:2px 2px 0 var(--fw-ink)!important}
 </style>
 
+
+<style id="fwGameDashboardStyles">
+.fw-gd{position:fixed;inset:0;z-index:999998;overflow:auto;background:#FFF7E8;color:#20243A;font-family:Arial,sans-serif}
+.fw-gd[hidden],.fw-modal[hidden]{display:none!important}
+.fw-gd-top{height:68px;background:#fff;border-bottom:2px solid #20243A;display:flex;align-items:center;justify-content:space-between;padding:0 42px;position:sticky;top:0;z-index:5}
+.fw-gd-logo{font-size:12px;font-weight:1000;letter-spacing:.12em;display:flex;gap:9px;align-items:center}.fw-gd-logo span{display:grid;place-items:center;width:31px;height:31px;background:#20243A;color:#C8FF4D;border-radius:7px;box-shadow:3px 3px 0 #111426}
+.fw-gd-player{display:flex;align-items:center;gap:14px;font-size:10px;font-weight:1000}.fw-gd-player button{border:0;background:none;font:inherit;color:#777;cursor:pointer}
+.fw-gd-main{max-width:1160px;margin:auto;padding:44px 42px 80px}
+.fw-gd-hero{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:28px}.fw-gd-kicker{font-size:8px;font-weight:1000;letter-spacing:.17em;color:#737687;margin-bottom:10px}.fw-gd-hero h1{font-size:clamp(42px,5vw,70px);line-height:.94;letter-spacing:-.06em;margin:0}.fw-gd-hero p{color:#707384;margin:16px 0 0;font-size:14px}.fw-payday-chip{background:#C8FF4D;border:2px solid #20243A;border-radius:14px;padding:14px 17px;min-width:150px;box-shadow:4px 4px 0 #20243A}.fw-payday-chip small,.fw-payday-chip strong{display:block}.fw-payday-chip small{font-size:7px;font-weight:1000;letter-spacing:.15em}.fw-payday-chip strong{font-size:24px;margin:5px 0}.fw-payday-chip button{font-size:8px;border:0;background:none;padding:0;text-decoration:underline;cursor:pointer}
+.fw-resource-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:55px}.fw-resource{border:2px solid #20243A;border-radius:13px;padding:17px;box-shadow:4px 4px 0 #20243A}.fw-resource small{font-size:7px;font-weight:1000;letter-spacing:.14em;display:block}.fw-resource strong{display:block;font-size:24px;margin:7px 0}.fw-resource span{font-size:9px;color:#555a6a}.fw-resource.income{background:#fff}.fw-resource.bills{background:#FF9C7A}.fw-resource.savings{background:#83D9FF}.fw-resource.enjoy{background:#C8FF4D}
+.fw-gd-section{margin-bottom:58px}.fw-section-title{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}.fw-section-title>div>span,.fw-note-card>div>span{font-size:8px;font-weight:1000;color:#888b98}.fw-section-title h2,.fw-note-card h2{font-size:29px;letter-spacing:-.04em;margin:4px 0}.fw-section-title p,.fw-note-card p{font-size:11px;color:#747887;margin:0}.fw-new-build,.fw-build-info>button,.fw-mission button{border:2px solid #20243A;border-radius:9px;background:#fff;padding:10px 13px;font:inherit;font-size:9px;font-weight:1000;cursor:pointer;box-shadow:3px 3px 0 #20243A}.fw-new-build:active,.fw-build-info>button:active,.fw-mission button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #20243A}
+.fw-mission-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.fw-mission{background:#fff;border:2px solid #20243A;border-radius:13px;padding:15px;display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:center}.fw-mission-icon{width:36px;height:36px;background:#FF9C7A;border:2px solid #20243A;border-radius:9px;display:grid;place-items:center;font-weight:1000}.fw-mission small{display:block;font-size:7px;font-weight:1000;letter-spacing:.1em}.fw-mission strong{display:block;font-size:16px;margin-top:3px}.fw-mission button{grid-column:1/-1;box-shadow:none;background:#fff;font-size:8px}.fw-mission.is-paid{background:#E9E6F7}.fw-mission.is-paid .fw-mission-icon{background:#C8FF4D}.fw-mission.is-paid button{background:#20243A;color:#fff}
+.fw-build-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.fw-photo-build{background:#fff;border:2px solid #20243A;border-radius:17px;overflow:hidden;box-shadow:5px 5px 0 #20243A}.fw-build-photo{height:285px;background:#ECE9DD;position:relative;overflow:hidden}.fw-upload-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:linear-gradient(145deg,#B8A7FF,#83D9FF)}.fw-upload-placeholder strong{font-size:34px;letter-spacing:-.05em}.fw-upload-placeholder span{font-size:10px}.fw-upload-placeholder button{border:2px solid #20243A;background:#fff;border-radius:9px;padding:10px 13px;font:inherit;font-size:9px;font-weight:1000;cursor:pointer;box-shadow:3px 3px 0 #20243A}.fw-puzzle-mask{position:absolute;inset:0;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(4,1fr);pointer-events:none}.fw-puzzle-mask i{background:rgba(32,36,58,.72);border:1px solid rgba(255,255,255,.45)}
+.fw-build-info{display:flex;justify-content:space-between;align-items:start;padding:17px 18px 10px}.fw-build-info small{font-size:7px;font-weight:1000;letter-spacing:.15em;color:#777}.fw-build-info h3{font-size:25px;margin:4px 0}.fw-build-info>button{box-shadow:none;padding:7px 10px}
+.fw-build-progress{padding:0 18px}.fw-build-progress>div:first-child{display:flex;justify-content:space-between;font-size:9px}.fw-build-progress .pct{font-size:11px}.fw-bar{height:8px;background:#E7E5DE;border-radius:99px;margin-top:7px;overflow:hidden}.fw-bar i{height:100%;display:block;background:#C8FF4D;border-right:2px solid #20243A}.fw-build-action{padding:14px 18px 18px;display:flex;justify-content:space-between;align-items:center;font-size:9px}.fw-build-action button{border:0;background:#20243A;color:#fff;border-radius:8px;padding:9px 12px;font:inherit;font-weight:1000;cursor:pointer}
+.fw-notes{max-width:850px}.fw-note-card{background:#B8A7FF;border:2px solid #20243A;border-radius:17px;padding:22px;box-shadow:5px 5px 0 #20243A}.fw-note-card textarea{display:block;width:100%;height:95px;margin:18px 0 10px;box-sizing:border-box;border:2px solid #20243A;border-radius:10px;padding:12px;font:inherit;resize:vertical}.fw-note-card>button{border:2px solid #20243A;background:#20243A;color:#fff;border-radius:9px;padding:10px 14px;font:inherit;font-size:9px;font-weight:1000;cursor:pointer}.fw-note-answer{margin-top:12px;background:#fff;border:2px solid #20243A;border-radius:10px;padding:12px;font-size:11px;line-height:1.5}
+.fw-modal{position:fixed;inset:0;background:rgba(32,36,58,.35);z-index:1000002;display:grid;place-items:center;padding:20px}.fw-modal-card{position:relative;width:min(470px,100%);background:#FFF7E8;border:2px solid #20243A;border-radius:18px;padding:26px;box-shadow:7px 7px 0 #20243A}.fw-modal-x{position:absolute;right:14px;top:12px;border:0;background:none;font-size:22px;cursor:pointer}.fw-modal-card h2{font-size:34px;letter-spacing:-.05em;margin:8px 0 22px}.fw-modal-card label{display:block;font-size:9px;font-weight:1000;margin:12px 0}.fw-modal-card input{display:block;width:100%;box-sizing:border-box;margin-top:6px;border:2px solid #20243A;border-radius:9px;padding:11px;background:#fff;font:inherit}.fw-create-btn{margin-top:16px;border:2px solid #20243A;background:#20243A;color:#fff;border-radius:9px;padding:12px 15px;font:inherit;font-size:10px;font-weight:1000;cursor:pointer}
+@media(max-width:900px){.fw-gd-top{padding:0 20px}.fw-gd-main{padding:30px 20px}.fw-gd-hero{align-items:start;flex-direction:column}.fw-resource-grid{grid-template-columns:1fr 1fr}.fw-mission-grid{grid-template-columns:1fr 1fr}.fw-build-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.fw-resource-grid,.fw-mission-grid{grid-template-columns:1fr}.fw-game-credit{display:none}.fw-build-photo{height:230px}}
+</style>
+
+<style>.fw-user-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}.fw-puzzle-mask{z-index:2}.fw-upload-placeholder{z-index:3}</style>
+
+<style id="fwNicknameFix">
+.fw-player-greeting{font-size:10px;font-weight:1000;letter-spacing:.12em;color:#77798A;margin-bottom:9px}
+.fw-player-greeting strong{color:#20243A}
+</style>
+
 </head>
 <body>
 
@@ -1314,19 +1342,209 @@ function fwGameEnter(e){
   if(e)e.preventDefault();
   const input=document.getElementById('fwGameName');
   const name=(input?.value||'').trim();
-  if(!name){input?.focus();input?.classList.add('fw-game-error');setTimeout(()=>input?.classList.remove('fw-game-error'),350);return false;}
+  if(!name){
+    input?.focus();
+    input?.classList.add('fw-game-error');
+    setTimeout(()=>input?.classList.remove('fw-game-error'),350);
+    return false;
+  }
+
+  // The nickname entered THIS time is always the active player name.
   localStorage.setItem('fw_user_nickname',name);
   localStorage.setItem('fw_prototype_nickname',name);
+
   document.querySelectorAll('[data-user-name]').forEach(el=>el.textContent=name);
+
+  // Open the dashboard using the newly entered nickname.
+  if(typeof fwShowDashboard === 'function') fwShowDashboard(name);
+
   const screen=document.getElementById('fwGameWelcome');
-  if(screen){screen.style.transition='opacity .28s ease,transform .28s ease';screen.style.opacity='0';screen.style.transform='scale(1.01)';setTimeout(()=>screen.remove(),300);}
-  const old=document.querySelector('.tester-entry'); if(old) old.style.display='none';
+  if(screen){
+    screen.style.transition='opacity .28s ease,transform .28s ease';
+    screen.style.opacity='0';
+    screen.style.transform='scale(1.01)';
+    setTimeout(()=>screen.remove(),300);
+  }
+
+  const old=document.querySelector('.tester-entry');
+  if(old) old.style.display='none';
+
   return false;
 }
 document.addEventListener('DOMContentLoaded',()=>{
  const n=localStorage.getItem('fw_user_nickname')||localStorage.getItem('fw_prototype_nickname');
- const i=document.getElementById('fwGameName'); if(i&&n)i.value=n;
+ const i=document.getElementById('fwGameName');
+ if(i && n && !i.value.trim()) i.value=n;
 });
+</script>
+
+
+<div id="fwGameDashboard" class="fw-gd" hidden>
+  <header class="fw-gd-top">
+    <div class="fw-gd-logo"><span>F</span> FUTURE WEALTH</div>
+    <div class="fw-gd-player"><span id="fwDashName">PLAYER</span><button onclick="fwResetGame()">Log out</button></div>
+  </header>
+
+  <main class="fw-gd-main">
+    <section class="fw-gd-hero">
+      <div>
+        <div class="fw-player-greeting" id="fwPlayerGreeting">HEY, <strong>PLAYER</strong> ✦</div>
+      <div class="fw-gd-kicker">LEVEL 01 · PAYDAY BUILD</div>
+        <h1>Let's build this payday.</h1>
+        <p>Clear what matters. Put pieces toward your future. Keep something for you.</p>
+      </div>
+      <div class="fw-payday-chip"><small>NEXT PAYDAY</small><strong id="fwDays">4 DAYS</strong><button onclick="fwEditPayday()">Edit date</button></div>
+    </section>
+
+    <section class="fw-resource-grid">
+      <article class="fw-resource income"><small>PAYDAY RESOURCES</small><strong>₱21,000</strong><span>Ready to allocate</span></article>
+      <article class="fw-resource bills"><small>MISSIONS CLEARED</small><strong id="fwCleared">0 / 4</strong><span>Mark bills paid</span></article>
+      <article class="fw-resource savings"><small>SAFETY BUILT</small><strong>₱5,000</strong><span>Emergency savings</span></article>
+      <article class="fw-resource enjoy"><small>YOURS TO ENJOY</small><strong id="fwEnjoy">₱0</strong><span>After your plan</span></article>
+    </section>
+
+    <section class="fw-gd-section">
+      <div class="fw-section-title">
+        <div><span>01</span><h2>Clear your missions</h2><p>Every paid bill gets out of the way.</p></div>
+      </div>
+      <div class="fw-mission-grid" id="fwMissionGrid">
+        <article class="fw-mission" data-paid="false" data-amount="2000"><div class="fw-mission-icon">B</div><div><small>ELECTRICITY</small><strong>₱2,000</strong></div><button onclick="fwToggleBill(this)">Mark paid</button></article>
+        <article class="fw-mission" data-paid="false" data-amount="1500"><div class="fw-mission-icon">W</div><div><small>WATER</small><strong>₱1,500</strong></div><button onclick="fwToggleBill(this)">Mark paid</button></article>
+        <article class="fw-mission" data-paid="false" data-amount="3500"><div class="fw-mission-icon">T</div><div><small>TUITION</small><strong>₱3,500</strong></div><button onclick="fwToggleBill(this)">Mark paid</button></article>
+        <article class="fw-mission" data-paid="false" data-amount="6000"><div class="fw-mission-icon">H</div><div><small>HOME + BILLS</small><strong>₱6,000</strong></div><button onclick="fwToggleBill(this)">Mark paid</button></article>
+      </div>
+    </section>
+
+    <section class="fw-gd-section fw-build-section">
+      <div class="fw-section-title">
+        <div><span>02</span><h2>Your builds</h2><p>Upload a photo. Your savings reveal it piece by piece.</p></div>
+        <button class="fw-new-build" onclick="fwOpenBuildCreator()">+ New build</button>
+      </div>
+
+      <div class="fw-build-grid" id="fwBuildGrid">
+        <article class="fw-photo-build" data-goal="Japan" data-target="60000" data-saved="12000">
+          <div class="fw-build-photo" id="fwJapanPhoto">
+            <div class="fw-upload-placeholder"><strong>JAPAN</strong><span>Your dream photo</span><button onclick="fwChoosePhoto(this)">Upload photo</button><input type="file" accept="image/*" hidden onchange="fwPhotoSelected(this)"></div>
+            <div class="fw-puzzle-mask" aria-hidden="true"></div>
+          </div>
+          <div class="fw-build-info"><div><small>DREAM BUILD</small><h3>Japan</h3></div><button onclick="fwEditBuild(this)">Edit</button></div>
+          <div class="fw-build-progress"><div><span><b class="saved">₱12,000</b> / <span class="target">₱60,000</span></span><b class="pct">20%</b></div><div class="fw-bar"><i style="width:20%"></i></div></div>
+          <div class="fw-build-action"><span class="piece-count">4 / 20 pieces</span><button onclick="fwAddBuildMoney(this)">Add money</button></div>
+        </article>
+
+        <article class="fw-photo-build" data-goal="Aircon" data-target="10000" data-saved="2500">
+          <div class="fw-build-photo" id="fwAirconPhoto">
+            <div class="fw-upload-placeholder"><strong>AIRCON</strong><span>Your comfort goal</span><button onclick="fwChoosePhoto(this)">Upload photo</button><input type="file" accept="image/*" hidden onchange="fwPhotoSelected(this)"></div>
+            <div class="fw-puzzle-mask" aria-hidden="true"></div>
+          </div>
+          <div class="fw-build-info"><div><small>COMFORT BUILD</small><h3>Aircon</h3></div><button onclick="fwEditBuild(this)">Edit</button></div>
+          <div class="fw-build-progress"><div><span><b class="saved">₱2,500</b> / <span class="target">₱10,000</span></span><b class="pct">25%</b></div><div class="fw-bar"><i style="width:25%"></i></div></div>
+          <div class="fw-build-action"><span class="piece-count">5 / 20 pieces</span><button onclick="fwAddBuildMoney(this)">Add money</button></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="fw-gd-section fw-notes">
+      <div class="fw-note-card">
+        <div><span>03</span><h2>Money dump</h2><p>Write it all down. Future Wealth can turn the mess into a clear next step.</p></div>
+        <textarea id="fwMoneyNote" placeholder="“I have tuition coming up and I also really want to start saving for Japan…”"></textarea>
+        <button onclick="fwSummarizeNote()">Ask Future Wealth</button>
+        <div id="fwNoteAnswer" class="fw-note-answer" hidden></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="fwBuildModal" class="fw-modal" hidden>
+  <div class="fw-modal-card">
+    <button class="fw-modal-x" onclick="fwCloseBuildCreator()">×</button>
+    <div class="fw-gd-kicker">NEW BUILD</div>
+    <h2>What are you building?</h2>
+    <label>Goal name<input id="fwNewGoalName" placeholder="Japan, laptop, emergency fund..."></label>
+    <label>Target amount<input id="fwNewGoalTarget" type="number" placeholder="60000"></label>
+    <label>Photo of your dream<input id="fwNewGoalPhoto" type="file" accept="image/*"></label>
+    <button class="fw-create-btn" onclick="fwCreateBuild()">Create build →</button>
+  </div>
+</div>
+
+
+<script id="fwGameDashboardScript">
+(function(){
+  function money(n){return '₱'+Number(n).toLocaleString('en-PH');}
+  window.fwShowDashboard=function(name){
+    const d=document.getElementById('fwGameDashboard'); if(!d)return;
+    d.hidden=false; document.getElementById('fwDashName').textContent=name||'PLAYER';
+    const greet=document.querySelector('#fwPlayerGreeting strong');
+    if(greet) greet.textContent=(name||'PLAYER').toUpperCase();
+    const w=document.getElementById('fwGameWelcome'); if(w)w.remove();
+    window.fwRefreshBuilds(); window.fwRefreshBills(); window.fwRefreshEnjoy();
+  };
+  window.fwResetGame=function(){localStorage.removeItem('fw_user_nickname');location.reload();};
+  window.fwEditPayday=function(){const d=prompt('When is your next payday?','2026-10-05');if(d)document.getElementById('fwDays').textContent='PAYDAY SET';};
+  window.fwRefreshBills=function(){
+    const bills=[...document.querySelectorAll('.fw-mission')];
+    const cleared=bills.filter(x=>x.dataset.paid==='true').length;
+    document.getElementById('fwCleared').textContent=cleared+' / '+bills.length;
+  };
+  window.fwToggleBill=function(btn){
+    const card=btn.closest('.fw-mission'), paid=card.dataset.paid==='true';
+    card.dataset.paid=String(!paid); card.classList.toggle('is-paid',!paid);
+    btn.textContent=!paid?'Cleared':'Mark paid'; fwRefreshBills(); fwRefreshEnjoy();
+  };
+  window.fwRefreshEnjoy=function(){
+    const bills=[...document.querySelectorAll('.fw-mission')].reduce((s,c)=>s+(c.dataset.paid==='true'?Number(c.dataset.amount):0),0);
+    document.getElementById('fwEnjoy').textContent=money(Math.max(0,21000-bills-5000));
+  };
+  window.fwChoosePhoto=function(btn){btn.parentElement.querySelector('input[type=file]').click();};
+  window.fwPhotoSelected=function(input){
+    const file=input.files?.[0]; if(!file)return;
+    const card=input.closest('.fw-photo-build'), box=input.closest('.fw-build-photo');
+    const url=URL.createObjectURL(file);
+    let img=box.querySelector('.fw-user-photo');
+    if(!img){img=document.createElement('img');img.className='fw-user-photo';box.prepend(img);}
+    img.src=url; img.onload=()=>{box.querySelector('.fw-upload-placeholder').style.display='none';fwApplyPuzzle(card);};
+  };
+  function fwApplyPuzzle(card){
+    const pct=Math.min(100,Number(card.dataset.saved)/Math.max(1,Number(card.dataset.target))*100);
+    const mask=card.querySelector('.fw-puzzle-mask'); mask.innerHTML='';
+    const total=20, open=Math.round(total*pct/100);
+    for(let i=0;i<total;i++){const piece=document.createElement('i'); if(i<open)piece.style.background='transparent'; mask.appendChild(piece);}
+    card.querySelector('.pct').textContent=Math.round(pct)+'%';
+    card.querySelector('.saved').textContent=money(card.dataset.saved);
+    card.querySelector('.target').textContent=money(card.dataset.target);
+    card.querySelector('.fw-bar i').style.width=pct+'%';
+    card.querySelector('.piece-count').textContent=open+' / '+total+' pieces';
+  }
+  window.fwRefreshBuilds=function(){document.querySelectorAll('.fw-photo-build').forEach(fwApplyPuzzle);};
+  window.fwAddBuildMoney=function(btn){
+    const card=btn.closest('.fw-photo-build'), amount=prompt('How much are you adding to '+card.dataset.goal+'?','1000');
+    if(amount===null)return; const n=Number(String(amount).replace(/[^0-9.]/g,'')); if(!n||n<0)return;
+    card.dataset.saved=Number(card.dataset.saved)+n; fwApplyPuzzle(card);
+  };
+  window.fwEditBuild=function(btn){
+    const card=btn.closest('.fw-photo-build');
+    const name=prompt('Goal name',card.dataset.goal); if(name===null)return;
+    const target=prompt('Target amount',card.dataset.target); if(target===null)return;
+    if(name.trim()){card.dataset.goal=name.trim();card.querySelector('h3').textContent=name.trim();}
+    if(Number(target)>0)card.dataset.target=Number(target);fwApplyPuzzle(card);
+  };
+  window.fwOpenBuildCreator=function(){document.getElementById('fwBuildModal').hidden=false;};
+  window.fwCloseBuildCreator=function(){document.getElementById('fwBuildModal').hidden=true;};
+  window.fwCreateBuild=function(){
+    const name=document.getElementById('fwNewGoalName').value.trim(), target=Number(document.getElementById('fwNewGoalTarget').value);
+    if(!name||!target)return alert('Add a goal name and target amount first.');
+    const file=document.getElementById('fwNewGoalPhoto').files?.[0];
+    const grid=document.getElementById('fwBuildGrid');
+    const card=document.createElement('article'); card.className='fw-photo-build';card.dataset.goal=name;card.dataset.target=target;card.dataset.saved=0;
+    card.innerHTML='<div class="fw-build-photo"><div class="fw-upload-placeholder"><strong>'+name.replace(/[<>]/g,'')+'</strong><span>Your new build</span><button onclick="fwChoosePhoto(this)">Upload photo</button><input type="file" accept="image/*" hidden onchange="fwPhotoSelected(this)"></div><div class="fw-puzzle-mask"></div></div><div class="fw-build-info"><div><small>NEW BUILD</small><h3>'+name.replace(/[<>]/g,'')+'</h3></div><button onclick="fwEditBuild(this)">Edit</button></div><div class="fw-build-progress"><div><span><b class="saved">₱0</b> / <span class="target">'+money(target)+'</span></span><b class="pct">0%</b></div><div class="fw-bar"><i style="width:0%"></i></div></div><div class="fw-build-action"><span class="piece-count">0 / 20 pieces</span><button onclick="fwAddBuildMoney(this)">Add money</button></div>';
+    grid.appendChild(card); if(file){const input=card.querySelector('input[type=file]');const dt=new DataTransfer();dt.items.add(file);input.files=dt.files;fwPhotoSelected(input);}
+    fwCloseBuildCreator(); document.getElementById('fwNewGoalName').value='';document.getElementById('fwNewGoalTarget').value='';document.getElementById('fwNewGoalPhoto').value='';
+  };
+  window.fwSummarizeNote=function(){
+    const text=document.getElementById('fwMoneyNote').value.trim(), box=document.getElementById('fwNoteAnswer');if(!text)return;
+    box.hidden=false;box.innerHTML='<strong>Here’s what I’m hearing.</strong><br>'+text.replace(/[<>]/g,'')+'<br><br><strong>Next step:</strong> Separate what must be paid, what you want to save, and what you can comfortably keep for yourself. Future Wealth can help you turn that into a plan.';
+  };
+})();
 </script>
 
 </body></html>
