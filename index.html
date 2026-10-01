@@ -883,7 +883,7 @@ body{background:var(--fw-cream)!important;color:var(--fw-ink)!important}
 .guide p{color:var(--fw-muted)!important}
 .guide .linkbtn{color:#315D50!important}
 
-/* Breathing room */
+/* Keep Aside */
 .foundation{
   padding:20px!important;background:var(--fw-blue)!important;
   border:1px solid #CAE5EF!important;border-radius:16px!important;box-shadow:none!important;
@@ -2485,6 +2485,31 @@ document.addEventListener('DOMContentLoaded',function(){
 }
 </style>
 
+
+<style id="fwProgressHome">
+.fw-progress-home{
+  margin:18px 0 28px;padding:22px;border:1.5px solid rgba(32,36,58,.18);
+  border-radius:22px;background:rgba(255,255,255,.72);box-shadow:4px 4px 0 rgba(32,36,58,.12)
+}
+.fw-progress-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.fw-progress-kicker{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.65}
+.fw-progress-title{font-size:28px;font-weight:800;line-height:1.05;margin:5px 0}
+.fw-progress-meta{font-size:14px;line-height:1.45;opacity:.72}
+.fw-progress-amount{font-size:24px;font-weight:800;white-space:nowrap}
+.fw-progress-bar{height:12px;background:rgba(32,36,58,.10);border-radius:99px;overflow:hidden;margin:18px 0 10px}
+.fw-progress-fill{height:100%;width:0;border-radius:99px;background:#20243A;transition:width .45s ease}
+.fw-progress-bottom{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.fw-progress-days{font-size:14px;font-weight:700}
+.fw-progress-cta{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border-radius:12px;border:1px solid #20243A;background:#20243A;color:#fff;text-decoration:none;font-weight:800}
+@media(max-width:800px){
+  .fw-progress-home{padding:18px;margin-top:14px}
+  .fw-progress-top{display:block}
+  .fw-progress-amount{margin-top:12px}
+  .fw-progress-bottom{align-items:stretch;flex-direction:column}
+  .fw-progress-cta{width:100%}
+}
+</style>
+
 </head>
 <body>
 
@@ -2563,6 +2588,8 @@ document.addEventListener('DOMContentLoaded',function(){
 </div>
 
 <main class="app">
+<div id="fwProgressHome" class="fw-progress-home" style="display:none"></div>
+
   <div class="profilebar">
   <div style="display:flex;align-items:center;gap:9px"><div class="avatar" id="avatar">J</div><div><div class="eyebrow">Your money space</div><div id="profileName" style="font-size:13px;font-weight:800">Player</div></div></div>
   <button class="logout" onclick="logoutUser()">Log out</button>
@@ -2645,7 +2672,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
       <div class="eyebrow" style="margin-top:22px">Make room for you</div>
       <div class="row"><div class="field"><label>Future You</label><input id="saveInput" type="number" value="0" oninput="updateFinal()"></div><div class="field"><label>Left to Use</label><input id="enjoyInput" type="number" value="0" oninput="updateFinal()"></div></div>
-      <div class="allocation"><span>Keep available</span><b id="finalAvailable">₱0</b></div>
+      <div class="allocation"><span>Still Unplanned</span><b id="finalAvailable">₱0</b></div>
       <div class="notice" id="stageAdvice"></div>
       <div class="sheet-actions"><button class="primary" onclick="confirmPlan()">Save my plan →</button><button class="secondary" onclick="backToExpenses()">Back</button></div>
     </div>
@@ -2682,12 +2709,58 @@ document.addEventListener('DOMContentLoaded',function(){
 const peso=n=>'₱'+Math.max(0,Math.round(n)).toLocaleString('en-PH');
 const catalog=[['Water','💧'],['Electricity','⚡'],['WiFi','📶'],['Groceries','🛒'],['Tuition','🎓'],['Credit Card','💳'],['Transportation','🚗'],['Rent','🏠'],['Phone','📱'],['Insurance','🛡️']];
 let selected=['Water','Electricity','WiFi','Groceries','Tuition','Credit Card'], values={}, remainder=0, suggestion={};
-let payday=new Date();payday.setDate(payday.getDate()+14);let cycleDays=14;
+const PAYDAY_KEY='fw_payday_settings_v1';
+let payday=new Date();
+let cycleDays=14;
+let payFrequencyValue='14';
+
+function loadPaydaySettings(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(PAYDAY_KEY)||'{}');
+    if(saved.date){
+      const d=new Date(saved.date+'T12:00:00');
+      if(!isNaN(d)) payday=d;
+    }else{
+      payday=new Date();
+      payday.setHours(12,0,0,0);
+      payday.setDate(payday.getDate()+14);
+    }
+    payFrequencyValue=String(saved.frequency||'14');
+    cycleDays=Number(saved.cycleDays)||14;
+  }catch(e){
+    payday=new Date();
+    payday.setHours(12,0,0,0);
+    payday.setDate(payday.getDate()+14);
+  }
+}
+function savePaydaySettings(){
+  try{
+    localStorage.setItem(PAYDAY_KEY,JSON.stringify({
+      date:payday.toISOString().slice(0,10),
+      frequency:payFrequencyValue,
+      cycleDays
+    }));
+  }catch(e){}
+}
+function advancePayday(){
+  const d=new Date(payday);
+  if(payFrequencyValue==='15'){
+    // Twice a month: keep the simple 15-day rhythm used by the current UI.
+    d.setDate(d.getDate()+15);
+  }else if(payFrequencyValue==='30'){
+    d.setMonth(d.getMonth()+1);
+  }else{
+    d.setDate(d.getDate()+(Number(cycleDays)||14));
+  }
+  payday=d;
+  savePaydaySettings();
+}
 
 function val(id){return Math.max(0,Number(document.getElementById(id)?.value)||0)}
 let customIcons={};let chosenExpenseIcon='🐾';
 function icon(n){return (catalog.find(x=>x[0]===n)||['',customIcons[n]||'✦'])[1]}
 function pickExpenseIcon(btn){chosenExpenseIcon=btn.dataset.icon;document.querySelectorAll('#iconPicker .quick').forEach(x=>x.classList.remove('selected'));btn.classList.add('selected')}
+loadPaydaySettings();
 function daysUntilPayday(){const n=new Date(),t=new Date(n.getFullYear(),n.getMonth(),n.getDate()),p=new Date(payday.getFullYear(),payday.getMonth(),payday.getDate());return Math.ceil((p-t)/86400000)}
 function openPayday(){renderExpenses();document.getElementById('overlay').style.display='flex';updateRemainder()}
 function closePayday(){document.getElementById('overlay').style.display='none'}
@@ -2715,12 +2788,12 @@ function buildSuggestion(){
   const unplanned=Math.max(0,remainder-breathing-room);
   suggestion={save:breathing,enjoy:room,goals:{},available:unplanned};
 
-  advisorLead.textContent=`You have ${peso(remainder)} after expenses and ${daysText} until payday. Here’s what I’d look at first — not a rule.`;
+  advisorLead.textContent=`You have ${peso(remainder)} after expenses and ${daysText} until payday. Here’s one way to think about it.`;
 
   const chips=[
-    ['🛟 Breathing room',breathing],
+    ['Keep Aside',breathing],
     ['☕ Left to Use',room],
-    ['💵 Unplanned for',unplanned]
+    ['💵 Still Unplanned',unplanned]
   ];
 
   if(activeGoals.length){
@@ -2732,7 +2805,7 @@ function buildSuggestion(){
   suggestGrid.innerHTML=chips.map(x=>`<div class="suggest-chip">${x[0]}<b>${x[1] ? peso(x[1]) : 'Choose if you want'}</b></div>`).join('');
 
   whyPlan.textContent=activeGoals.length
-    ? 'Your goals are here if you want to put something toward one. You choose the amount.'
+    ? 'Goal contribution is optional. You choose the amount.'
     : 'No goal yet? That’s okay. You can plan this payday without one.';
 }
 
@@ -2751,7 +2824,7 @@ function continueToPlan(){
 }
 function backToExpenses(){stage2.style.display='none'}
 function useSuggestion(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;airInput.value=suggestion.air||0;japanInput.value=suggestion.japan||0;updateFinal()}
-function updateFinal(){const used=val('saveInput')+val('enjoyInput')+val('airInput')+val('japanInput'),left=remainder-used;finalAvailable.textContent=(left<0?'-':'')+peso(Math.abs(left));stageAdvice.textContent=left<0?`This is ${peso(-left)} over what is actually left. Adjust an amount until it fits.`:`${peso(left)} stays flexible. The adviser suggests; you decide.`}
+function updateFinal(){const used=val('saveInput')+val('enjoyInput')+val('airInput')+val('japanInput'),left=remainder-used;finalAvailable.textContent=(left<0?'-':'')+peso(Math.abs(left));stageAdvice.textContent=left<0?`This is ${peso(-left)} over what is actually left. Adjust an amount until it fits.`:`${peso(left)} stays flexible. You decide what feels right.`}
 function confirmPlan(){
  const expenses=selected.reduce((s,n)=>s+(Number(values[n])||0),0),s=val('saveInput'),e=val('enjoyInput'),a=val('airInput'),j=val('japanInput'),avail=remainder-s-e-a-j;if(avail<0)return;
  planned.textContent=peso(expenses);savings.textContent=peso(s);enjoy.textContent=peso(e);available.textContent=peso(avail);usable.textContent=peso(e+avail);saveTotal.textContent=peso(s);
@@ -2762,9 +2835,23 @@ function confirmPlan(){
  guideText.textContent=`You handled ${peso(expenses)} in expenses first. From the ${peso(remainder)} left, you chose what to save, enjoy, build toward, and keep flexible.`;
  closePayday();
 }
-function editPaydayDate(){paydayDateInput.value=payday.toISOString().slice(0,10);dateEditor.style.display='flex'}
+function editPaydayDate(){
+  paydayDateInput.value=payday.toISOString().slice(0,10);
+  payFrequency.value=payFrequencyValue;
+  dateEditor.style.display='flex';
+}
 function closeDateEditor(){dateEditor.style.display='none'}
-function savePaydayDate(){const d=new Date(paydayDateInput.value+'T12:00:00');if(isNaN(d))return;payday=d;cycleDays=Number(payFrequency.value)||Math.max(1,daysUntilPayday());closeDateEditor();renderPayday()}
+function savePaydayDate(){
+  const raw=paydayDateInput.value;
+  const d=new Date(raw+'T12:00:00');
+  if(isNaN(d))return;
+  payday=d;
+  payFrequencyValue=String(payFrequency.value||'14');
+  cycleDays=payFrequencyValue==='7'?7:payFrequencyValue==='15'?15:payFrequencyValue==='30'?30:Number(payFrequencyValue)||14;
+  savePaydaySettings();
+  closeDateEditor();
+  renderPayday();
+}
 function renderPayday(){
  const days=daysUntilPayday();homePaydayDate.textContent=payday.toLocaleDateString('en-US',{month:'long',day:'numeric'});
  homeCountdown.textContent=days>1?`${days} days to go`:days===1?'Tomorrow ✦':days===0?"IT'S PAYDAY! ✦":'Choose your next payday';
@@ -3459,11 +3546,11 @@ function drawPlanGoals(){
 const gv=()=>[...document.querySelectorAll('.gIn')].map(e=>({i:Number(e.dataset.i),a:Number(e.value)||0}));
 const V=id=>Number((document.getElementById(id)||{}).value)||0;
 window.buildSuggestion=function(){
-  const days=Math.max(1,daysUntilPayday());
+  const days=Math.max(0,daysUntilPayday());
   if(remainder<=0){
     suggestion={save:0,enjoy:0,goals:{},available:0};
-    advisorLead.textContent='This paycheck took care of life. That still counts as progress.';
-    whyPlan.textContent='There is nothing left to assign right now. That is information, not a failure.';
+    advisorLead.textContent='Your needs are covered. There’s nothing else you need to assign.';
+    whyPlan.textContent='You can leave the rest open or come back when you’re ready.';
     suggestGrid.innerHTML='';
     return;
   }
@@ -3471,47 +3558,98 @@ window.buildSuggestion=function(){
   const active=goals.map((x,i)=>({x,i}))
     .filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1));
 
-  const breathing=Math.round(remainder*.25);
-  const room=Math.round(remainder*.15);
-  const available=Math.max(0,remainder-breathing-room);
-  suggestion={save:breathing,enjoy:room,goals:{},available};
+  // Suggestions are guidance only. Nothing is saved until the user chooses it.
+  const keepAside=Math.round(remainder*.25);
+  const leftToUse=Math.round(remainder*.15);
+  const stillUnplanned=Math.max(0,remainder-keepAside-leftToUse);
 
-  advisorLead.textContent=`You have ${P(remainder)} after expenses and ${days} day${days===1?'':'s'} until payday. Here’s what I’d look at first — not a rule.`;
+  suggestion={save:keepAside,enjoy:leftToUse,goals:{},available:stillUnplanned};
+
+  const daysText=days===0?'today':`${days} day${days===1?'':'s'}`;
+  advisorLead.textContent=`You have ${P(remainder)} after needs and ${daysText} until payday. Here’s one way to think about it.`;
 
   const chips=[
-    ['Breathing room',breathing],
-    ['Left to Use',room],
-    ['Unplanned for',available]
+    ['Keep Aside',keepAside],
+    ['Left to Use',leftToUse],
+    ['Still Unplanned',stillUnplanned]
   ];
-
   active.forEach(o=>chips.push([o.x.name,null]));
 
-  suggestGrid.innerHTML=chips.map(x=>`<div class="suggest-chip">${x[0]}<b>${x[1]===null?'Choose if you want':P(x[1])}</b></div>`).join('');
+  suggestGrid.innerHTML=chips.map(x=>
+    `<div class="suggest-chip">${esc(x[0])}<b>${x[1]===null?'Choose if you want':P(x[1])}</b></div>`
+  ).join('');
 
   whyPlan.textContent=active.length
-    ? 'Your goals are here if you want to put something toward one. You choose the amount.'
+    ? 'Goal contribution is optional. You choose the amount.'
     : 'No goal yet? That’s okay. You can plan this payday without one.';
 };
 window.useSuggestion=function(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;document.querySelectorAll('.gIn').forEach(e=>e.value=(suggestion.goals||{})[Number(e.dataset.i)]||0);updateFinal()};
-window.updateFinal=function(){const used=V('saveInput')+V('enjoyInput')+gv().reduce((a,o)=>a+o.a,0),left=remainder-used;
-  finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));stageAdvice.textContent=left<0?`That’s ${P(-left)} more than you have left. Adjust an amount.`:`${P(left)} is still yours to decide.`};
+window.updateFinal=function(){
+  const used=V('saveInput')+V('enjoyInput')+gv().reduce((a,o)=>a+o.a,0);
+  const left=remainder-used;
+  finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));
+  stageAdvice.textContent=left<0
+    ? `That’s ${P(-left)} more than you have left. Adjust an amount.`
+    : `${P(left)} is still yours to decide.`;
+};
 window.confirmPlan=function(){
-  const expenses=selected.reduce((s,n)=>s+(Number(values[n])||0),0),s=V('saveInput'),e=V('enjoyInput'),alloc=gv(),gt=alloc.reduce((a,o)=>a+o.a,0),avail=remainder-s-e-gt;if(avail<0)return;
+  const expenses=selected.reduce((s,n)=>s+(Number(values[n])||0),0);
+  const s=V('saveInput'), e=V('enjoyInput');
+  const alloc=gv();
+  const goalTotal=alloc.reduce((a,o)=>a+o.a,0);
+  const avail=remainder-s-e-goalTotal;
+  if(avail<0)return;
+
   const username=(currentUser&&currentUser.username)||'user';
-  const cycleKey=(typeof payday!=='undefined'&&payday instanceof Date)?payday.toISOString().slice(0,10):'current';
+  const cycleKey=payday.toISOString().slice(0,10);
   const planKey='fw_payday_alloc_'+username;
-  let plans={}; try{plans=JSON.parse(localStorage.getItem(planKey)||'{}')}catch(err){plans={}}
+
+  let plans={};
+  try{plans=JSON.parse(localStorage.getItem(planKey)||'{}')}catch(err){plans={}}
+
+  // If this payday was edited/re-saved, remove its previous goal contribution first.
   const previous=plans[cycleKey]||{};
-  // Replace this payday's goal allocation instead of adding it repeatedly.
-  Object.keys(previous).forEach(k=>{const i=Number(k);if(goals[i])goals[i].saved=Math.max(0,Number(goals[i].saved||0)-Number(previous[k]||0));});
-  alloc.forEach(o=>{if(o.a>0&&goals[o.i])goals[o.i].saved=Math.min(Number(goals[o.i].target)||0,Number(goals[o.i].saved||0)+o.a);});
-  plans[cycleKey]={};alloc.forEach(o=>{if(o.a>0)plans[cycleKey][o.i]=o.a});
-  localStorage.setItem(planKey,JSON.stringify(plans));
-  planned.textContent=P(expenses);savings.textContent=P(s);enjoy.textContent=P(e);available.textContent=P(avail);usable.textContent=P(e+avail);saveTotal.textContent=P(s);
-  saveMsg.textContent=s?'You started building breathing room.':'No savings yet. When there’s room, we’ll start.';
-  store();drawGoals();
-  guideText.textContent=`You handled ${P(expenses)} in expenses first. From the ${P(remainder)} left, you chose what to save, enjoy, put toward goals, and keep flexible.`;
+  Object.keys(previous).forEach(k=>{
+    const i=Number(k);
+    if(goals[i]){
+      goals[i].saved=Math.max(0,Number(goals[i].saved||0)-Number(previous[k]||0));
+    }
+  });
+
+  alloc.forEach(o=>{
+    if(o.a>0&&goals[o.i]){
+      goals[o.i].saved=Math.min(
+        Number(goals[o.i].target)||0,
+        Number(goals[o.i].saved||0)+o.a
+      );
+    }
+  });
+
+  plans[cycleKey]={};
+  alloc.forEach(o=>{if(o.a>0)plans[cycleKey][o.i]=o.a});
+  try{localStorage.setItem(planKey,JSON.stringify(plans))}catch(err){}
+
+  planned.textContent=P(expenses);
+  savings.textContent=P(s);
+  enjoy.textContent=P(e);
+  available.textContent=P(avail);
+  usable.textContent=P(e+avail);
+  saveTotal.textContent=P(s);
+
+  saveMsg.textContent=s
+    ? 'You chose to keep some money aside.'
+    : 'Nothing set aside this payday.';
+
+  store();
+  drawGoals();
+
+  guideText.textContent=`You handled ${P(expenses)} in needs first. Then you chose what to keep aside, use, put toward goals, and leave unplanned.`;
+
+  // The payday is complete. Move the date forward automatically for the next cycle.
+  advancePayday();
+
   closePayday();
+  renderPayday();
 };
 
 load();drawGoals();
@@ -4669,6 +4807,65 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 
   window.fwMoneyMindReminder=renderReminder;
+})();
+</script>
+
+
+<script id="fwProgressHomeScript">
+(function(){
+  function fwP(n){
+    try{
+      if(typeof P==='function') return P(n);
+    }catch(e){}
+    return '₱'+Number(n||0).toLocaleString();
+  }
+  function fwProgressDays(target){
+    if(!target) return null;
+    const now=new Date(); now.setHours(0,0,0,0);
+    const d=new Date(target+'T00:00:00');
+    if(isNaN(d)) return null;
+    return Math.ceil((d-now)/86400000);
+  }
+  window.renderProgressHome=function(){
+    const host=document.getElementById('fwProgressHome');
+    if(!host || typeof goals==='undefined') return;
+    const active=(goals||[]).filter(g=>Number(g.target)>0 && Number(g.saved||0)<Number(g.target));
+    if(!active.length){
+      host.style.display='none';
+      return;
+    }
+    // Show the most recently created active goal.
+    const g=active[active.length-1];
+    const saved=Number(g.saved||0), target=Number(g.target||0);
+    const pct=Math.max(0,Math.min(100,(saved/target)*100));
+    const days=fwProgressDays(g.targetDate);
+    host.style.display='';
+    host.innerHTML=`
+      <div class="fw-progress-top">
+        <div>
+          <div class="fw-progress-kicker">What you're building</div>
+          <div class="fw-progress-title">${typeof esc==='function'?esc(g.name):g.name}</div>
+          <div class="fw-progress-meta">${Math.round(pct)}% complete · ${fwP(Math.max(0,target-saved))} to go</div>
+        </div>
+        <div class="fw-progress-amount">${fwP(saved)} / ${fwP(target)}</div>
+      </div>
+      <div class="fw-progress-bar"><div class="fw-progress-fill" style="width:${pct}%"></div></div>
+      <div class="fw-progress-bottom">
+        <div class="fw-progress-days">${days===null?'No target date':(days>0?`${days} day${days===1?'':'s'} left`:days===0?'Today':'Past target date')}</div>
+        <a href="#" class="fw-progress-cta" onclick="event.preventDefault(); if(typeof openPayday==='function') openPayday();">Plan my payday →</a>
+      </div>`;
+  };
+  document.addEventListener('DOMContentLoaded',function(){
+    setTimeout(renderProgressHome,150);
+  });
+  const oldStore=window.store;
+  if(typeof oldStore==='function'){
+    window.store=function(){ const r=oldStore.apply(this,arguments); setTimeout(renderProgressHome,20); return r; };
+  }
+  const oldDraw=window.drawGoals;
+  if(typeof oldDraw==='function'){
+    window.drawGoals=function(){ const r=oldDraw.apply(this,arguments); setTimeout(renderProgressHome,20); return r; };
+  }
 })();
 </script>
 
