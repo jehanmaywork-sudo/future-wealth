@@ -2515,6 +2515,32 @@ document.addEventListener('DOMContentLoaded',function(){
 .field-help{font-size:12px;line-height:1.35;opacity:.68;margin:-4px 0 7px}
 </style>
 
+
+<style id="fwFinalPaydayUX">
+.fw-goal-plan-row{
+  display:grid;grid-template-columns:1fr minmax(150px,210px);gap:16px;
+  padding:16px 0;border-top:1px solid rgba(151,177,201,.18);align-items:end
+}
+.fw-goal-plan-row:first-child{border-top:0}
+.fw-goal-plan-name{font-size:19px;font-weight:800;color:#edf4fb}
+.fw-goal-plan-progress{margin-top:4px;font-size:12px;color:#8fa4b7}
+.fw-goal-plan-input label{display:block;font-size:12px;font-weight:800;color:#3d83df;margin-bottom:7px}
+.fw-goal-plan-input input{width:100%;box-sizing:border-box}
+.fw-goal-suggest{font-size:12px;color:#79dcb7;margin-top:8px;font-weight:700}
+.fw-goal-suggest em{font-style:normal;color:#8fa4b7;font-weight:600}
+.final-unplanned{margin-top:16px;padding:15px 0;border-top:1px solid rgba(151,177,201,.25);border-bottom:1px solid rgba(151,177,201,.25);font-size:16px}
+.final-unplanned b{font-size:24px}
+#paydaySummary .sheet{max-height:90vh;overflow:auto}
+.fw-summary-card{background:#16283c;border:1px solid rgba(121,220,183,.28);border-radius:20px;padding:22px}
+.fw-summary-date{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#79dcb7;font-weight:800}
+.fw-summary-title{font-size:28px;font-weight:900;margin:5px 0 16px}
+.fw-summary-row{display:flex;justify-content:space-between;gap:18px;padding:9px 0;border-bottom:1px solid rgba(151,177,201,.13)}
+.fw-summary-row:last-child{border-bottom:0}
+.fw-summary-goal{margin-top:18px;padding-top:15px;border-top:1px solid rgba(151,177,201,.18)}
+.fw-summary-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.fw-summary-actions button{flex:1;min-width:150px}
+@media(max-width:700px){.fw-goal-plan-row{grid-template-columns:1fr}.fw-summary-row{font-size:14px}}
+</style>
 </head>
 <body>
 
@@ -2613,7 +2639,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="journey"><div class="journey-fill" id="journeyFill"></div></div>
       <div class="journey-labels"><span>THIS CYCLE</span><span>PAYDAY</span></div>
       <div class="sub" id="paydayMotivation" style="margin-top:10px">Your next chance to move your life forward.</div>
-      <button class="dateedit" onclick="editPaydayDate()">Edit payday</button>
+      <button class="dateedit" onclick="editPaydayDate()">Edit payday</button><div id="homePlanActions" style="margin-top:10px"></div>
     </div>
   </section>
 
@@ -2668,18 +2694,51 @@ document.addEventListener('DOMContentLoaded',function(){
         <div id="advisorLead" style="font-size:14px;line-height:1.5"></div>
         <div class="suggest-grid" id="suggestGrid"></div>
         <div class="why" id="whyPlan"></div>
-        <button class="linkbtn" onclick="useSuggestion()">Use this as a starting point →</button>
+        <button class="linkbtn" onclick="useSuggestion()">Use these suggestions →</button>
       </div>
-      <div class="eyebrow" style="margin-top:18px">Build what matters ✦</div>
-      <h3 style="margin:5px 0 6px">Want to put a little toward something you care about?</h3>
-      <div class="sub" style="margin-bottom:12px">You can choose a goal if you’d like.</div>
+
+      <div class="eyebrow" style="margin-top:22px">Your payday plan</div>
+      <h3 style="margin:5px 0 6px">Give this payday a place.</h3>
+      <div class="sub" style="margin-bottom:12px">Change any suggestion. You can leave some money unplanned.</div>
+
       <div id="planGoals"></div>
 
-      <div class="eyebrow" style="margin-top:22px">Make room for you</div>
-      <div class="row"><div class="field"><label>Future You</label><input id="saveInput" type="number" value="0" oninput="updateFinal()"></div><div class="field"><label>For Myself</label><div class="field-help">Money you’re giving yourself permission to use this payday.</div><input id="enjoyInput" type="number" value="0" oninput="updateFinal()"></div></div>
-      <div class="allocation"><span>Still Unplanned</span><b id="finalAvailable">₱0</b></div>
+      <div class="row">
+        <div class="field">
+          <label>Keep Aside</label>
+          <div class="field-help">Money you want to leave for later.</div>
+          <input id="saveInput" type="number" min="0" value="0" oninput="updateFinal()">
+        </div>
+        <div class="field">
+          <label>For Myself</label>
+          <div class="field-help">Money you’re giving yourself permission to use this payday.</div>
+          <input id="enjoyInput" type="number" min="0" value="0" oninput="updateFinal()">
+        </div>
+      </div>
+
+      <div class="allocation final-unplanned">
+        <span>Still Unplanned</span><b id="finalAvailable">₱0</b>
+      </div>
+      <div class="field-help" style="margin-top:6px">Money you haven’t decided what to do with yet.</div>
       <div class="notice" id="stageAdvice"></div>
-      <div class="sheet-actions"><button class="primary" onclick="confirmPlan()">Save my plan →</button><button class="secondary" onclick="backToExpenses()">Back</button></div>
+      <div class="sheet-actions">
+        <button class="primary" onclick="confirmPlan()">Save my plan →</button>
+        <button class="secondary" onclick="backToExpenses()">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="overlay" id="paydaySummary" style="display:none">
+  <div class="sheet">
+    <div class="eyebrow">Payday complete ✦</div>
+    <h2>You’re all set.</h2>
+    <div class="sub">Here’s your saved payday plan.</div>
+    <div id="summaryContent"></div>
+    <div class="fw-summary-actions">
+      <button class="primary" onclick="savePaydaySummaryPhoto()">Save as Photo</button>
+      <button class="secondary" onclick="closePaydaySummary()">Done →</button>
     </div>
   </div>
 </div>
@@ -2858,14 +2917,43 @@ function savePaydayDate(){
   renderPayday();
 }
 function renderPayday(){
- const days=daysUntilPayday();homePaydayDate.textContent=payday.toLocaleDateString('en-US',{month:'long',day:'numeric'});
+ const days=daysUntilPayday();
+ homePaydayDate.textContent=payday.toLocaleDateString('en-US',{month:'long',day:'numeric'});
  homeCountdown.textContent=days>1?`${days} days to go`:days===1?'Tomorrow ✦':days===0?"IT'S PAYDAY! ✦":'Choose your next payday';
- const progress=days>=0?Math.max(0,Math.min(100,(cycleDays-days)/cycleDays*100)):100;journeyFill.style.width=progress+'%';
- if(days===0){paydayMotivation.textContent='Your hard work landed. Let’s make it count.';payButton.textContent='Add my paycheck →'}
- else if(days===1)paydayMotivation.textContent='Your next paycheck lands tomorrow ✦';
- else if(days<=3)paydayMotivation.textContent='Payday is getting close.';
- else if(days<=7)paydayMotivation.textContent='One week until your next money reset.';
- else paydayMotivation.textContent='Your next chance to move your life forward.';
+ const progress=days>=0?Math.max(0,Math.min(100,(cycleDays-days)/cycleDays*100)):100;
+ journeyFill.style.width=progress+'%';
+
+ const last=fwCurrentSavedPlan ? fwCurrentSavedPlan() : null;
+ const plannedForNext=last && last.nextPayday===payday.toISOString().slice(0,10) && days>0;
+
+ if(days===0){
+   paydayMotivation.textContent='Your payday is here. Ready for a new plan?';
+   payButton.textContent='Add my paycheck →';
+ }else if(plannedForNext){
+   paydayMotivation.textContent='This payday is already planned. You’re all set for now.';
+   payButton.textContent='View my plan →';
+ }else if(days===1){
+   paydayMotivation.textContent='Your next paycheck lands tomorrow ✦';
+   payButton.textContent='I Got Paid';
+ }else if(days<=3){
+   paydayMotivation.textContent='Payday is getting close.';
+   payButton.textContent='I Got Paid';
+ }else if(days<=7){
+   paydayMotivation.textContent='One week until your next payday.';
+   payButton.textContent='I Got Paid';
+ }else{
+   paydayMotivation.textContent='Your next payday is '+days+' days away.';
+   payButton.textContent='I Got Paid';
+ }
+
+ payButton.onclick=plannedForNext ? openSavedPaydaySummary : openPayday;
+ const actions=document.getElementById('homePlanActions');
+ if(actions){
+   actions.innerHTML=plannedForNext
+     ? `<button class="linkbtn" onclick="openSavedPaydaySummary()">View payday summary →</button>
+        <button class="linkbtn" onclick="openSavedPaydaySummary()">Save as Photo</button>`
+     : '';
+ }
 }
 
 let currentUser=null;
@@ -3395,7 +3483,7 @@ snap();draw();
   <div class="eyebrow">New goal</div><h2>What are you working toward?</h2>
   <div class="sub">Name it and choose a target.</div>
   <div class="field"><label>Goal name</label><input id="goalName" placeholder="e.g. New laptop, Emergency fund"></div>
-  <div class="row"><div class="field"><label>Target amount</label><input id="goalTarget" type="number" placeholder="e.g. 20000"></div></div>
+  <div class="row"><div class="field"><label>Target amount</label><input id="goalTarget" type="number" placeholder="e.g. 20000"></div><div class="field"><label>Target date <span style="opacity:.55">(optional)</span></label><input id="goalDate" type="date"></div></div>
   <div class="sheet-actions"><button class="primary" onclick="saveGoal()">Add goal</button><button class="secondary" type="button" onclick="document.getElementById('goalEditor').style.display='none';document.getElementById('goalEditor').setAttribute('aria-hidden','true')">Cancel</button></div>
 </div></div>
 <script id="fwDynamicGoals">
@@ -3431,7 +3519,7 @@ function goalCard(x,i){
   return `<article class="dream-card${done?' completed':''}" data-goal="${esc(x.name)}" data-target="${x.target}" data-saved="${x.saved}" data-i="${i}">
     <div class="goal-art custom-art">${photo}<div class="goal-art-label">${done?'COMPLETE · ':''}${esc(x.name).toUpperCase()}</div></div>
     <div class="goal-body"><div class="goal-top"><div><span class="goal-kicker">${done?'COMPLETED BUILD':'YOUR GOAL'}</span><h3>${esc(x.name)}</h3></div><button class="goal-edit" onclick="editGoalI(${i})">Edit</button></div>
-    <div class="goal-money"><strong>${P(x.saved)}</strong><span>of ${P(x.target)}</span></div>
+    <div class="goal-money"><strong>${P(x.saved)}</strong><span>of ${P(x.target)}</span></div><div class="goal-funding-note">This total grows each time you choose an amount for this goal on payday.</div>
     <div class="goal-track"><i style="width:${pct}%"></i></div>
     <div class="goal-foot"><span>${done?'100% complete ✦':pct+'% there'}</span>${done?`<button onclick="deleteGoalI(${i})">Remove</button>`:`<button onclick="planGoalI(${i})">Plan it from payday →</button>`}</div></div></article>`;
 }
@@ -3450,7 +3538,7 @@ window.fwAddGoal=function(){
   const editor=document.getElementById('goalEditor');
   if(!editor)return;
   if(editor.parentElement!==document.body) document.body.appendChild(editor);
-  ['goalName','goalTarget'].forEach(i=>{
+  ['goalName','goalTarget','goalDate'].forEach(i=>{
     const el=document.getElementById(i);
     if(el)el.value='';
   });
@@ -3463,10 +3551,11 @@ window.fwAddGoal=function(){
 window.saveGoal=function(){
   const n=document.getElementById('goalName').value.trim();
   const t=Number(document.getElementById('goalTarget').value);
+  const targetDate=document.getElementById('goalDate')?.value||'';
   const s=0;
   if(!n||!(t>0)){alert('Give it a name and a target amount.');return}
 
-  goals.push({name:n,target:t,saved:Math.max(0,Math.min(s,t)),photo:''});
+  goals.push({name:n,target:t,targetDate:targetDate||'',saved:Math.max(0,Math.min(s,t)),photo:''});
   localStorage.setItem('fw_user_created_goal_'+n.toLowerCase(),'1');
   store();
 
@@ -3485,13 +3574,17 @@ window.saveGoal=function(){
     input.scrollIntoView({behavior:'smooth',block:'center'});
   }
 };
-window.editGoalI=function(i){const x=goals[i];if(!x)return;
+window.editGoalI=function(i){
+  const x=goals[i];if(!x)return;
   const n=prompt('Goal name',x.name);if(n===null)return;
   const t=prompt('Target amount',x.target);if(t===null)return;
   const saved=prompt('Amount saved so far',x.saved);if(saved===null)return;
+  const d=prompt('Target date (YYYY-MM-DD, optional)',x.targetDate||'');if(d===null)return;
   const tv=Number(String(t).replace(/[^0-9.]/g,'')),sv=Number(String(saved).replace(/[^0-9.]/g,''));
   if(n.trim())x.name=n.trim();if(tv>0)x.target=tv;if(Number.isFinite(sv)&&sv>=0)x.saved=Math.min(sv,x.target);
-  store();drawGoals()};
+  x.targetDate=d.trim();
+  store();drawGoals();
+};
 window.deleteGoalI=function(i){if(!goals[i])return;if(confirm('Remove '+goals[i].name+' from your goal history?')){goals.splice(i,1);store();drawGoals()}};
 window.fundGoalI=function(i){
   if(typeof window.planGoalI==='function') window.planGoalI(i);
@@ -3501,7 +3594,6 @@ window.fwSaveGoalPhoto=function(i,data){if(!goals[i])return;goals[i].photo=data;
 function drawPlanGoals(){
   const box=document.getElementById('planGoals');
   if(!box)return;
-
   const active=goals.map((x,i)=>({x,i}))
     .filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1));
 
@@ -3513,44 +3605,41 @@ function drawPlanGoals(){
     prior=all[key]||{};
   }catch(e){}
 
-  if(!goals.length){
-    box.innerHTML=`<div class="goal-hint">
-      <strong>No goals yet.</strong>
-      <span>You can add one whenever you're ready.</span>
-    </div>
-    <button type="button" class="goal-add" style="margin-top:8px" onclick="fwAddGoal()">+ Add a goal</button>`;
-    return;
-  }
-
   if(!active.length){
-    box.innerHTML=`<div class="goal-hint">
-      <strong>Your current goals are complete. ✦</strong>
-      <span>Nothing needs to be assigned here right now.</span>
-    </div>`;
+    box.innerHTML=goals.length
+      ? `<div class="goal-hint"><strong>Your current goals are complete. ✦</strong><span>Nothing needs to be assigned here right now.</span></div>`
+      : `<div class="goal-hint"><strong>No goal yet.</strong><span>You can plan this payday without one, or add a goal whenever you’re ready.</span></div>
+         <button type="button" class="goal-add" style="margin-top:8px" onclick="fwAddGoal()">+ Add a goal</button>`;
     return;
   }
 
-  box.innerHTML=
-    
-    active.map(o=>{
+  const baseForGoals=Math.max(0,remainder-Math.round(remainder*.25)-Math.round(remainder*.15));
+  const share=Math.max(0,Math.floor(baseForGoals/active.length));
+
+  box.innerHTML=`
+    <div class="eyebrow" style="margin-bottom:8px">Goals · optional</div>
+    ${active.map(o=>{
       const need=Math.max(0,(Number(o.x.target)||0)-(Number(o.x.saved)||0));
+      const suggested=Math.min(need,share);
       const thisPay=Number(prior[o.i]||0);
+      const value=thisPay||suggested||0;
       return `<div class="fw-goal-plan-row">
         <div class="fw-goal-plan-copy">
           <div class="fw-goal-plan-name">${esc(o.x.name)}</div>
           <div class="fw-goal-plan-progress">${P(o.x.saved||0)} of ${P(o.x.target)} · ${P(need)} still needed</div>
+          ${suggested>0?`<div class="fw-goal-suggest">Suggested this payday: ${P(suggested)} <em>· you can change it or skip it</em></div>`:`<div class="fw-goal-suggest">You can skip this payday.</div>`}
         </div>
         <div class="fw-goal-plan-input">
           <label>This payday</label>
-          <input type="number" min="0" value="${thisPay}" class="gIn" data-i="${o.i}" oninput="updateFinal()">
+          <input type="number" min="0" value="${value}" class="gIn" data-i="${o.i}" oninput="updateFinal()">
         </div>
       </div>`;
-    }).join('');
+    }).join('')}
+  `;
 }
 
 const gv=()=>[...document.querySelectorAll('.gIn')].map(e=>({i:Number(e.dataset.i),a:Number(e.value)||0}));
-const V=id=>Number((document.getElementById(id)||{}).value)||0;
-window.buildSuggestion=function(){
+const V=window.buildSuggestion=function(){
   const days=Math.max(0,daysUntilPayday());
   if(remainder<=0){
     suggestion={save:0,enjoy:0,goals:{},available:0};
@@ -3563,95 +3652,223 @@ window.buildSuggestion=function(){
   const active=goals.map((x,i)=>({x,i}))
     .filter(o=>(Number(o.x.saved)||0)<Math.max(1,Number(o.x.target)||1));
 
-  // Suggestions are guidance only. Nothing is saved until the user chooses it.
   const keepAside=Math.round(remainder*.25);
-  const leftToUse=Math.round(remainder*.15);
-  const stillUnplanned=Math.max(0,remainder-keepAside-leftToUse);
+  const forMyself=Math.round(remainder*.15);
+  const goalPool=Math.max(0,remainder-keepAside-forMyself);
+  const perGoal=active.length?Math.floor(goalPool/active.length):0;
+  const goalSuggestions={};
+  active.forEach(o=>{
+    const need=Math.max(0,(Number(o.x.target)||0)-(Number(o.x.saved)||0));
+    goalSuggestions[o.i]=Math.min(need,perGoal);
+  });
+  const suggestedGoals=Object.values(goalSuggestions).reduce((a,b)=>a+b,0);
+  const unplanned=Math.max(0,remainder-keepAside-forMyself-suggestedGoals);
 
-  suggestion={save:keepAside,enjoy:leftToUse,goals:{},available:stillUnplanned};
+  suggestion={save:keepAside,enjoy:forMyself,goals:goalSuggestions,available:unplanned};
 
-  const daysText=days===0?'today':`${days} day${days===1?'':'s'}`;
-  advisorLead.textContent=`You have ${P(remainder)} after needs and ${daysText} until payday. Here’s one way to think about it.`;
+  advisorLead.textContent=`You have ${P(remainder)} after needs and ${days===0?'today':days+' day'+(days===1?'':'s')} until payday. Here’s one way to think about it.`;
 
   const chips=[
     ['Keep Aside',keepAside],
-    ['For Myself',leftToUse],
-    ['Still Unplanned',stillUnplanned]
+    ['For Myself',forMyself],
+    ['Still Unplanned',unplanned]
   ];
-  active.forEach(o=>chips.push([o.x.name,null]));
+  active.forEach(o=>chips.push([o.x.name,goalSuggestions[o.i]||0]));
 
   suggestGrid.innerHTML=chips.map(x=>
-    `<div class="suggest-chip">${esc(x[0])}<b>${x[1]===null?'Choose if you want':P(x[1])}</b></div>`
+    `<div class="suggest-chip">${esc(x[0])}<b>${P(x[1]||0)}</b></div>`
   ).join('');
 
   whyPlan.textContent=active.length
-    ? 'Goal contribution is optional. You choose the amount.'
+    ? 'These are starting points. Change any amount or skip a goal.'
     : 'No goal yet? That’s okay. You can plan this payday without one.';
 };
-window.useSuggestion=function(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;document.querySelectorAll('.gIn').forEach(e=>e.value=(suggestion.goals||{})[Number(e.dataset.i)]||0);updateFinal()};
+
+window.useSuggestion=function(){
+  saveInput.value=suggestion.save||0;
+  enjoyInput.value=suggestion.enjoy||0;
+  document.querySelectorAll('.gIn').forEach(e=>{
+    e.value=(suggestion.goals||{})[Number(e.dataset.i)]||0;
+  });
+  updateFinal();
+};
+
 window.updateFinal=function(){
   const used=V('saveInput')+V('enjoyInput')+gv().reduce((a,o)=>a+o.a,0);
   const left=remainder-used;
   finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));
   stageAdvice.textContent=left<0
     ? `That’s ${P(-left)} more than you have left. Adjust an amount.`
-    : `${P(left)} is still yours to decide.`;
+    : left===0
+      ? 'Everything has a place. ✦'
+      : `${P(left)} is still unplanned. You can leave it open.`;
 };
+
+function fwUserKey(){
+  return (currentUser&&currentUser.username)||'user';
+}
+function fwPlansKey(){return 'fw_payday_history_'+fwUserKey();}
+function fwLoadPlans(){
+  try{return JSON.parse(localStorage.getItem(fwPlansKey())||'{}')}catch(e){return{}}
+}
+function fwSavePlans(p){
+  try{localStorage.setItem(fwPlansKey(),JSON.stringify(p));return true}catch(e){return false}
+}
+function fwDateLabel(iso){
+  return new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+function fwNextDateFrom(d){
+  const n=new Date(d);
+  if(payFrequencyValue==='15')n.setDate(n.getDate()+15);
+  else if(payFrequencyValue==='30')n.setMonth(n.getMonth()+1);
+  else n.setDate(n.getDate()+(Number(cycleDays)||14));
+  return n.toISOString().slice(0,10);
+}
+function fwCurrentSavedPlan(){
+  const p=fwLoadPlans();
+  const last=localStorage.getItem('fw_last_payday_key_'+fwUserKey());
+  return last && p[last] ? p[last] : null;
+}
+function fwRenderSummary(plan){
+  if(!plan)return;
+  const goalRows=(plan.goals||[]).filter(g=>g.amount>0).map(g=>
+    `<div class="fw-summary-row"><span>${esc(g.name)}</span><b>${P(g.amount)}</b></div>`
+  ).join('');
+  const goalProgress=(plan.goalProgress||[]).map(g=>
+    `<div class="fw-summary-row"><span>${esc(g.name)}</span><b>${P(g.saved)} / ${P(g.target)}</b></div>`
+  ).join('');
+  summaryContent.innerHTML=`
+    <div class="fw-summary-card">
+      <div class="fw-summary-date">${fwDateLabel(plan.payday)} · Payday</div>
+      <div class="fw-summary-title">${P(plan.income)} received</div>
+      <div class="fw-summary-row"><span>Needs</span><b>${P(plan.needs)}</b></div>
+      <div class="fw-summary-row"><span>Keep Aside</span><b>${P(plan.keepAside)}</b></div>
+      <div class="fw-summary-row"><span>For Myself</span><b>${P(plan.forMyself)}</b></div>
+      ${goalRows}
+      <div class="fw-summary-row"><span>Still Unplanned</span><b>${P(plan.stillUnplanned)}</b></div>
+      ${goalProgress?`<div class="fw-summary-goal"><div class="fw-summary-date">Goal progress</div>${goalProgress}</div>`:''}
+      <div class="fw-summary-row" style="margin-top:12px"><span>Next payday</span><b>${fwDateLabel(plan.nextPayday)}</b></div>
+      <div style="margin-top:12px;color:#8fa4b7;font-size:12px">Last updated ${new Date(plan.updatedAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}</div>
+    </div>`;
+}
+window.openSavedPaydaySummary=function(){
+  const p=fwCurrentSavedPlan();
+  if(!p)return;
+  fwRenderSummary(p);
+  paydaySummary.style.display='flex';
+};
+window.closePaydaySummary=function(){paydaySummary.style.display='none'};
+window.savePaydaySummaryPhoto=function(){
+  const p=fwCurrentSavedPlan();
+  if(!p)return;
+  const W=1080,H=1350;
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#0f1f2e';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#16283c';if(ctx.roundRect){ctx.roundRect(55,55,W-110,H-110,34);ctx.fill();}else{ctx.fillRect(55,55,W-110,H-110);}
+  ctx.fillStyle='#79dcb7';ctx.font='800 34px Inter,Arial,sans-serif';ctx.fillText('FUTURE WEALTH',95,125);
+  ctx.fillStyle='#edf4fb';ctx.font='900 58px Inter,Arial,sans-serif';ctx.fillText('Payday Summary',95,205);
+  ctx.fillStyle='#8fa4b7';ctx.font='600 28px Inter,Arial,sans-serif';ctx.fillText(fwDateLabel(p.payday),95,255);
+  let y=335;
+  const rows=[['Received',p.income],['Needs',p.needs],['Keep Aside',p.keepAside],['For Myself',p.forMyself]];
+  (p.goals||[]).filter(g=>g.amount>0).forEach(g=>rows.push([g.name,g.amount]));
+  rows.push(['Still Unplanned',p.stillUnplanned]);
+  rows.forEach(([label,val])=>{
+    ctx.fillStyle='#9fb2c2';ctx.font='600 27px Inter,Arial,sans-serif';ctx.fillText(label,95,y);
+    ctx.fillStyle='#edf4fb';ctx.font='800 30px Inter,Arial,sans-serif';ctx.textAlign='right';ctx.fillText(P(val),W-95,y);ctx.textAlign='left';y+=58;
+  });
+  y+=35;ctx.strokeStyle='rgba(151,177,201,.25)';ctx.beginPath();ctx.moveTo(95,y);ctx.lineTo(W-95,y);ctx.stroke();y+=55;
+  ctx.fillStyle='#79dcb7';ctx.font='800 27px Inter,Arial,sans-serif';ctx.fillText('GOAL PROGRESS',95,y);y+=52;
+  (p.goalProgress||[]).forEach(g=>{
+    ctx.fillStyle='#edf4fb';ctx.font='800 29px Inter,Arial,sans-serif';ctx.fillText(g.name,95,y);
+    ctx.textAlign='right';ctx.fillText(`${P(g.saved)} / ${P(g.target)}`,W-95,y);ctx.textAlign='left';
+    y+=48;ctx.fillStyle='#79dcb7';ctx.font='700 24px Inter,Arial,sans-serif';ctx.fillText(`${Math.round(Math.min(100,g.saved/Math.max(1,g.target)*100))}% complete`,95,y);y+=52;
+  });
+  ctx.fillStyle='#8fa4b7';ctx.font='600 25px Inter,Arial,sans-serif';ctx.fillText('Next payday · '+fwDateLabel(p.nextPayday),95,H-125);
+  c.toBlob(blob=>{
+    if(!blob)return;
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`future-wealth-payday-${p.payday}.png`;a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  },'image/png');
+};
+
 window.confirmPlan=function(){
   const expenses=selected.reduce((s,n)=>s+(Number(values[n])||0),0);
-  const s=V('saveInput'), e=V('enjoyInput');
+  const keep=V('saveInput'), self=V('enjoyInput');
   const alloc=gv();
   const goalTotal=alloc.reduce((a,o)=>a+o.a,0);
-  const avail=remainder-s-e-goalTotal;
+  const avail=remainder-keep-self-goalTotal;
   if(avail<0)return;
 
-  const username=(currentUser&&currentUser.username)||'user';
+  const username=fwUserKey();
   const cycleKey=payday.toISOString().slice(0,10);
-  const planKey='fw_payday_alloc_'+username;
+  const plans=fwLoadPlans();
+  const oldPlan=plans[cycleKey]||null;
 
-  let plans={};
-  try{plans=JSON.parse(localStorage.getItem(planKey)||'{}')}catch(err){plans={}}
-
-  // If this payday was edited/re-saved, remove its previous goal contribution first.
-  const previous=plans[cycleKey]||{};
-  Object.keys(previous).forEach(k=>{
-    const i=Number(k);
-    if(goals[i]){
-      goals[i].saved=Math.max(0,Number(goals[i].saved||0)-Number(previous[k]||0));
-    }
-  });
+  // Remove the previous contribution for this same payday before applying the edit.
+  let oldGoalAlloc={};
+  try{
+    const oldAlloc=JSON.parse(localStorage.getItem('fw_payday_alloc_'+username)||'{}');
+    oldGoalAlloc=oldAlloc[cycleKey]||{};
+    Object.keys(oldGoalAlloc).forEach(k=>{
+      const i=Number(k);
+      if(goals[i])goals[i].saved=Math.max(0,Number(goals[i].saved||0)-Number(oldGoalAlloc[k]||0));
+    });
+  }catch(e){}
 
   alloc.forEach(o=>{
     if(o.a>0&&goals[o.i]){
-      goals[o.i].saved=Math.min(
-        Number(goals[o.i].target)||0,
-        Number(goals[o.i].saved||0)+o.a
-      );
+      goals[o.i].saved=Math.min(Number(goals[o.i].target)||0,Number(goals[o.i].saved||0)+o.a);
     }
   });
 
-  plans[cycleKey]={};
-  alloc.forEach(o=>{if(o.a>0)plans[cycleKey][o.i]=o.a});
-  try{localStorage.setItem(planKey,JSON.stringify(plans))}catch(err){}
+  let allAlloc={};
+  try{allAlloc=JSON.parse(localStorage.getItem('fw_payday_alloc_'+username)||'{}')}catch(e){}
+  allAlloc[cycleKey]={};
+  alloc.forEach(o=>{if(o.a>0)allAlloc[cycleKey][o.i]=o.a});
+  try{localStorage.setItem('fw_payday_alloc_'+username,JSON.stringify(allAlloc))}catch(e){}
+
+  const plan={
+    payday:cycleKey,
+    income:val('income'),
+    needs:expenses,
+    keepAside:keep,
+    forMyself:self,
+    stillUnplanned:avail,
+    goals:alloc.map(o=>({name:goals[o.i]?.name||'',amount:o.a,index:o.i})).filter(g=>g.name),
+    goalProgress:alloc.map(o=>goals[o.i]?({
+      name:goals[o.i].name,
+      saved:Number(goals[o.i].saved||0),
+      target:Number(goals[o.i].target||0)
+    }):null).filter(Boolean),
+    updatedAt:new Date().toISOString(),
+    nextPayday:fwNextDateFrom(payday.toISOString().slice(0,10))
+  };
+  plans[cycleKey]=plan;
+  fwSavePlans(plans);
+  localStorage.setItem('fw_last_payday_key_'+username,cycleKey);
 
   planned.textContent=P(expenses);
-  savings.textContent=P(s);
-  enjoy.textContent=P(e);
+  savings.textContent=P(keep);
+  enjoy.textContent=P(self);
   available.textContent=P(avail);
-  usable.textContent=P(e+avail);
-  saveTotal.textContent=P(s);
-
-  saveMsg.textContent=s
-    ? 'You chose to keep some money aside.'
-    : 'Nothing set aside this payday.';
+  usable.textContent=P(self+avail);
+  saveTotal.textContent=P(keep);
+  saveMsg.textContent=keep?'You chose to keep some money aside.':'Nothing set aside this payday.';
 
   store();
   drawGoals();
 
-  guideText.textContent=`You handled ${P(expenses)} in needs first. Then you chose what to keep aside, use, put toward goals, and leave unplanned.`;
+  fwRenderSummary(plan);
+  closePayday();
 
-  // The payday is complete. Move the date forward automatically for the next cycle.
+  // Advance only after the current payday plan has been saved.
   advancePayday();
+  renderPayday();
+  paydaySummary.style.display='flex';
+};
+
+dvancePayday();
 
   closePayday();
   renderPayday();
@@ -4032,7 +4249,7 @@ function makePlanCard(){
     <p>Hey ${name || 'there'} ✦<br>You gave your money a purpose.</p>
     <div class="fw-plan-line"><span>💰 Payday</span><span>${data.payday||'—'}</span></div>
     <div class="fw-plan-line"><span>🏠 Essentials</span><span>${data.bills||'—'}</span></div>
-    <div class="fw-plan-line"><span>🌱 Future You</span><span>${data.savings||'—'}</span></div>
+    <div class="fw-plan-line"><span>◌ Keep Aside</span><span>${data.savings||'—'}</span></div>
     <div class="fw-plan-line"><span>✨ Goals</span><span>${data.goals||'—'}</span></div>
     <div class="fw-plan-line"><span>💙 For Myself</span><span>${data.room||'—'}</span></div>
     <p style="margin-top:25px;font-size:13px">🔒 Your money stays with you.<br>Future Wealth is a planning tool. No money was moved.</p>`;
@@ -4857,7 +5074,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="fw-progress-bar"><div class="fw-progress-fill" style="width:${pct}%"></div></div>
       <div class="fw-progress-bottom">
         <div class="fw-progress-days">${days===null?'No target date':(days>0?`${days} day${days===1?'':'s'} left`:days===0?'Today':'Past target date')}</div>
-        <a href="#" class="fw-progress-cta" onclick="event.preventDefault(); if(typeof openPayday==='function') openPayday();">Plan my payday →</a>
+        <a href="#" class="fw-progress-cta" onclick="event.preventDefault(); if(typeof fwCurrentSavedPlan==='function' && fwCurrentSavedPlan() && typeof openSavedPaydaySummary==='function') openSavedPaydaySummary(); else if(typeof openPayday==='function') openPayday();">Plan my payday →</a>
       </div>`;
   };
   document.addEventListener('DOMContentLoaded',function(){
@@ -4872,21 +5089,6 @@ document.addEventListener('DOMContentLoaded',function(){
     window.drawGoals=function(){ const r=oldDraw.apply(this,arguments); setTimeout(renderProgressHome,20); return r; };
   }
 })();
-</script>
-
-
-<script id="fwPastPaydayRules">
-window.fwPastPaydayEdit = function(paydayLabel, oldContribution, newContribution) {
-  const oldAmount = Number(oldContribution || 0);
-  const newAmount = Number(newContribution || 0);
-  return {
-    title: 'This payday has already passed.',
-    message: 'You’re editing the plan for ' + paydayLabel + '.',
-    oldContribution: oldAmount,
-    newContribution: newAmount,
-    difference: newAmount - oldAmount
-  };
-};
 </script>
 
 </body></html>
