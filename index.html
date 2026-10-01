@@ -2015,7 +2015,7 @@ select:focus{
 document.addEventListener('DOMContentLoaded', function(){
   const title=document.getElementById('fwWhyTitle');
   const input=document.getElementById('fwWhyInput');
-  if(title) title.textContent='WHAT DO YOU WANT YOUR MONEY TO HELP YOU DO?';
+  if(title) title.textContent='WHAT ARE YOU BUILDING THIS FOR?';
   if(input) input.placeholder='Example: Travel to Japan, feel more secure, buy things I enjoy, or worry less about money.';
 });
 
@@ -2297,6 +2297,194 @@ document.addEventListener('DOMContentLoaded',function(){
 }
 </style>
 
+
+<style id="fwFinalMobile">
+/* Final mobile pass — preserve desktop design, improve mobile readability and touch use */
+@media (max-width: 800px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden!important}
+  body{font-size:15px!important}
+  .app{
+    width:100%!important;max-width:100%!important;
+    padding:18px 16px 90px!important;
+    box-sizing:border-box!important;
+  }
+
+  .profilebar{
+    width:100%!important;box-sizing:border-box!important;
+    padding:8px 0 12px!important;
+  }
+
+  .hero{
+    margin-top:20px!important;
+    padding:28px 0 24px!important;
+  }
+  .hero h1{
+    font-size:clamp(38px,11vw,52px)!important;
+    line-height:1.02!important;
+    max-width:100%!important;
+  }
+  .hero>.sub{
+    font-size:15px!important;
+    line-height:1.5!important;
+    max-width:100%!important;
+  }
+  .balance{
+    margin-top:24px!important;
+    font-size:38px!important;
+    word-break:break-word!important;
+  }
+  .payday-card{
+    width:100%!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+    padding:16px!important;
+    margin-top:18px!important;
+  }
+
+  .section{
+    margin-top:42px!important;
+  }
+  .section h2{
+    font-size:29px!important;
+    line-height:1.08!important;
+  }
+
+  /* Cards and grids stack cleanly */
+  .grid,.cards,.two-col,.three-col{
+    grid-template-columns:1fr!important;
+  }
+  .card,.panel,.goal-card,.guide-card,.mind-card{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Prevent tables/forms from squeezing the page */
+  input,select,textarea,button{
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+  input,select,textarea{
+    min-height:46px!important;
+    font-size:16px!important; /* prevents iOS zoom */
+  }
+  textarea{min-height:110px!important}
+
+  button,.btn,.primary,.secondary,.navbtn{
+    min-height:44px!important;
+    touch-action:manipulation!important;
+  }
+
+  /* Payday Plan */
+  .row{
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+  }
+  .expense-toolbar{
+    gap:10px!important;
+    flex-wrap:wrap!important;
+  }
+  .allocation{
+    gap:8px!important;
+    flex-wrap:wrap!important;
+  }
+
+  /* Navigation: readable, scrollable instead of cramped */
+  .nav,.navtabs,.tabs{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+    flex-wrap:nowrap!important;
+  }
+  .nav::-webkit-scrollbar,.navtabs::-webkit-scrollbar,.tabs::-webkit-scrollbar{
+    display:none!important;
+  }
+  .navbtn{
+    flex:0 0 auto!important;
+    white-space:nowrap!important;
+  }
+
+  /* Opening experience */
+  #testerEntry{
+    padding:12px!important;
+    overflow-y:auto!important;
+  }
+  #testerEntry .fw-opening{
+    width:100%!important;
+    min-height:0!important;
+    grid-template-columns:1fr!important;
+    border-radius:20px!important;
+    box-shadow:6px 6px 0 #20243A!important;
+  }
+  .fw-open-copy{
+    padding:72px 22px 30px!important;
+  }
+  .fw-open-copy h1{
+    font-size:clamp(42px,12vw,58px)!important;
+    max-width:100%!important;
+  }
+  .fw-open-copy>p{
+    max-width:100%!important;
+    font-size:15px!important;
+    line-height:1.5!important;
+    margin:16px 0 22px!important;
+  }
+  .fw-open-cta{
+    width:100%!important;
+    text-align:center!important;
+    min-height:48px!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+  .fw-open-world{
+    min-height:390px!important;
+    border-left:0!important;
+    border-top:2px solid #20243A!important;
+  }
+  .fw-future-puzzle{
+    width:min(320px,78vw)!important;
+  }
+  .fw-unlock-float{
+    right:14px!important;
+    top:18%!important;
+  }
+  .fw-world-progress{
+    width:calc(100% - 36px)!important;
+    bottom:20px!important;
+  }
+
+  /* Name step */
+  .fw-name-step{
+    padding:28px 20px!important;
+    overflow:auto!important;
+  }
+  .fw-name-inner h2{
+    font-size:40px!important;
+  }
+
+  /* Keep copy from becoming visually heavy */
+  .eyebrow{
+    letter-spacing:.12em!important;
+  }
+  .sub,small,.helper,.hint{
+    line-height:1.45!important;
+  }
+}
+
+/* Very small phones */
+@media (max-width:390px){
+  .app{padding-left:13px!important;padding-right:13px!important}
+  .hero h1{font-size:36px!important}
+  .hero{padding-top:22px!important}
+  .section h2{font-size:27px!important}
+  .fw-open-copy{padding-left:18px!important;padding-right:18px!important}
+  .fw-open-world{min-height:350px!important}
+  .fw-future-puzzle{width:280px!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -2304,16 +2492,16 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="tester-entry-card fw-opening">
     <section class="fw-open-copy">
       <div class="fw-open-brand"><i>✦</i><span>FUTURE WEALTH</span></div>
-      <div class="fw-open-kicker">YOUR MONEY, YOUR PACE</div>
-      <h1>Build the <span class="fw-glow">life you’re looking forward to.</span></h1>
-      <p>Future Wealth helps you take care of what matters, save for what you want, and know exactly what you can enjoy guilt-free.</p>
-      <button class="fw-open-cta" type="button" onclick="fwOpenNickname()">Get started →</button>
+      <div class="fw-open-kicker">MONEY FOR THE LIFE YOU’RE BUILDING</div>
+      <h1>Understand your money. <span class="fw-glow">Build what matters.</span></h1>
+      <p>See what you have, make a plan when you want to, and work toward what matters to you.</p>
+      <button class="fw-open-cta" type="button" onclick="fwOpenNickname()">Start exploring →</button>
 
       <div class="fw-name-step" id="fwNameStep">
         <div class="fw-name-inner">
-          <div class="fw-open-kicker">A QUICK HELLO</div>
+          <div class="fw-open-kicker">QUICK HELLO</div>
           <h2>What should I call you?</h2>
-          <p>Use a nickname. You can change it later.</p>
+          <p>Just a nickname is enough.</p>
           <input id="testerName" autocomplete="off" placeholder="Nickname, e.g. Sunny"
                  onkeydown="if(event.key==='Enter') enterTesterSpace()">
           <button type="button" onclick="enterTesterSpace()">Continue →</button>
@@ -2398,17 +2586,17 @@ document.addEventListener('DOMContentLoaded',function(){
   </section>
 
   <section class="section">
-    <div class="eyebrow">This paycheck</div>
-    <h2>Where your money lives</h2>
+    <div class="eyebrow">Your Money</div>
+    <h2>Here’s where it’s going.</h2>
     <div class="grid">
-      <div class="bucket planned"><span class="icon">⌂</span><div class="amount" id="planned">₱0</div><div class="label">Planned · bills & needs</div></div>
-      <div class="bucket savings"><span class="icon">◌</span><div class="amount" id="savings">₱0</div><div class="label">Savings · Future You</div></div>
-      <div class="bucket enjoy"><span class="icon">♡</span><div class="amount" id="enjoy">₱0</div><div class="label">Enjoy · guilt-free</div></div>
-      <div class="bucket available"><span class="icon">↗</span><div class="amount" id="available">₱0</div><div class="label">Available · flexible</div></div>
+      <div class="bucket planned"><span class="icon">⌂</span><div class="amount" id="planned">₱0</div><div class="label">Needs · taking care of today</div></div>
+      <div class="bucket savings"><span class="icon">◌</span><div class="amount" id="savings">₱0</div><div class="label">Keep Aside · for later</div></div>
+      <div class="bucket enjoy"><span class="icon">♡</span><div class="amount" id="enjoy">₱0</div><div class="label">Left to Use · for you</div></div>
+      <div class="bucket available"><span class="icon">↗</span><div class="amount" id="available">₱0</div><div class="label">Still Unplanned · flexible</div></div>
     </div>
     <div class="guide" id="guide">
       <div class="guide-head">✦ Money Guide</div>
-      <p id="guideText">Start with your next paycheck. I’ll help you protect essentials first, then find room for savings, goals, enjoyment and flexibility.</p>
+      <p id="guideText">Want a little help making sense of it?</p>
       <button class="linkbtn" onclick="openPayday()">Plan my paycheck →</button>
     </div>
   </section>
@@ -2421,7 +2609,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
   <section class="section">
     <div class="eyebrow">Your foundation</div>
-    <h2>Building breathing room</h2>
+    <h2>Money kept aside</h2>
     <div class="foundation">
       <div><b>Savings</b><small id="saveMsg">No savings yet. When there’s room, we’ll start.</small></div>
       <strong id="saveTotal">₱0</strong>
@@ -2433,13 +2621,13 @@ document.addEventListener('DOMContentLoaded',function(){
 <div class="overlay" id="overlay">
   <div class="sheet">
     <div class="eyebrow">Payday ✦</div><h2>Your hard work just landed.</h2>
-    <div class="sub">First take care of life. Then we’ll build with what is actually left.</div>
+    <div class="sub">Let’s see what feels right for this one.</div>
     <div class="field"><label>Paycheck received</label><input id="income" type="number" placeholder="e.g. 20000" oninput="updateRemainder()"></div>
-    <div class="expense-toolbar"><div><div class="eyebrow">Take care of life</div>
-<b>Your expenses</b></div><button class="edit-expenses" onclick="openExpenseEditor()">Edit options</button></div>
+    <div class="expense-toolbar"><div><div class="eyebrow">Needs</div>
+<b>What needs taking care of?</b></div><button class="edit-expenses" onclick="openExpenseEditor()">Edit options</button></div>
     <div class="expense-list" id="expenseInputs"></div>
     <div id="comingInPlan"></div>
-    <div class="remaining-card"><div style="font-size:11px;opacity:.75;letter-spacing:.11em">ACTUALLY LEFT AFTER EXPENSES</div><div class="big" id="afterExpenses">₱0</div><div style="font-size:13px;opacity:.82">This is what we can plan next.</div></div>
+    <div class="remaining-card"><div style="font-size:11px;opacity:.75;letter-spacing:.11em">LEFT AFTER NEEDS</div><div class="big" id="afterExpenses">₱0</div><div style="font-size:13px;opacity:.82">Ready to plan.</div></div>
     <div class="sheet-actions"><button class="primary" onclick="continueToPlan()">Build my plan →</button><button class="secondary" onclick="closePayday()">Cancel</button></div>
 
     <div class="stage2" id="stage2">
@@ -2448,18 +2636,18 @@ document.addEventListener('DOMContentLoaded',function(){
         <div id="advisorLead" style="font-size:14px;line-height:1.5"></div>
         <div class="suggest-grid" id="suggestGrid"></div>
         <div class="why" id="whyPlan"></div>
-        <button class="linkbtn" onclick="useSuggestion()">Use this starting plan →</button>
+        <button class="linkbtn" onclick="useSuggestion()">Use this as a starting point →</button>
       </div>
       <div class="eyebrow" style="margin-top:18px">Build what matters ✦</div>
-      <h3 style="margin:5px 0 6px">What would you like this payday to help you build?</h3>
-      <div class="sub" style="margin-bottom:12px">If you already have a goal, choose what this payday can help build. If you don't, you can add one or skip this step.</div>
+      <h3 style="margin:5px 0 6px">Want to put a little toward something you care about?</h3>
+      <div class="sub" style="margin-bottom:12px">You can choose a goal if you’d like.</div>
       <div id="planGoals"></div>
 
       <div class="eyebrow" style="margin-top:22px">Make room for you</div>
-      <div class="row"><div class="field"><label>Future You</label><input id="saveInput" type="number" value="0" oninput="updateFinal()"></div><div class="field"><label>Room for You</label><input id="enjoyInput" type="number" value="0" oninput="updateFinal()"></div></div>
+      <div class="row"><div class="field"><label>Future You</label><input id="saveInput" type="number" value="0" oninput="updateFinal()"></div><div class="field"><label>Left to Use</label><input id="enjoyInput" type="number" value="0" oninput="updateFinal()"></div></div>
       <div class="allocation"><span>Keep available</span><b id="finalAvailable">₱0</b></div>
       <div class="notice" id="stageAdvice"></div>
-      <div class="sheet-actions"><button class="primary" onclick="confirmPlan()">Use this plan</button><button class="secondary" onclick="backToExpenses()">Back</button></div>
+      <div class="sheet-actions"><button class="primary" onclick="confirmPlan()">Save my plan →</button><button class="secondary" onclick="backToExpenses()">Back</button></div>
     </div>
   </div>
 </div>
@@ -2531,7 +2719,7 @@ function buildSuggestion(){
 
   const chips=[
     ['🛟 Breathing room',breathing],
-    ['☕ Room for You',room],
+    ['☕ Left to Use',room],
     ['💵 Unplanned for',unplanned]
   ];
 
@@ -2544,14 +2732,14 @@ function buildSuggestion(){
   suggestGrid.innerHTML=chips.map(x=>`<div class="suggest-chip">${x[0]}<b>${x[1] ? peso(x[1]) : 'Choose if you want'}</b></div>`).join('');
 
   whyPlan.textContent=activeGoals.length
-    ? 'You have goals available, but I won’t decide what to put toward them for you. Choose an amount only if it feels right, and you can change it before saving.'
-    : 'You do not have a goal yet, so I will not invent one. You can add a goal if there is something you want this payday to help build — or leave that part open.';
+    ? 'Your goals are here if you want to put something toward one. You choose the amount.'
+    : 'No goal yet? That’s okay. You can plan this payday without one.';
 }
 
 function continueToPlan(){
   updateRemainder();
   if(val('income')<=0){alert('Enter your paycheck first.');return}
-  if(remainder<0){alert('Your expenses are higher than this paycheck. Adjust them first so the plan is realistic.');return}
+  if(remainder<0){alert('What needs taking care of? are higher than this paycheck. Adjust them first so the plan is realistic.');return}
   stage2.style.display='block';
 
   // Use the real, user-created goals only. Never invent example goals.
@@ -2648,15 +2836,15 @@ renderPayday();restoreSession();
 <div class="guide-overlay" id="notesPage">
   <div class="guide-page">
     <button class="linkbtn" onclick="closeNotes()">← Back</button>
-    <div class="eyebrow" style="margin-top:12px">Money Notes</div>
-    <h1>Put it down so you can rest.</h1>
+    <div class="eyebrow" style="margin-top:12px">Money Mind</div>
+    <h1>What’s on your mind?</h1>
     <div class="sub">Jot what you don’t want to forget. I’ll pick out the amounts and keep the note for you.</div>
     <div class="notesbox" style="margin-top:16px;padding:14px">
       <textarea id="moneyNote" style="width:100%;min-height:110px;padding:12px;font-size:15px" placeholder="e.g. Birthday gift ₱3,000, electricity may be higher."></textarea>
       <button class="primary" style="width:100%;margin-top:9px" onclick="summarizeNote()">Save note</button>
       <div id="noteSummary" style="margin-top:12px;font-size:14px;line-height:1.6"></div>
     </div>
-    <div class="eyebrow" style="margin-top:22px">Your saved notes</div>
+    <div class="eyebrow" style="margin-top:22px">Saved in Money Mind</div>
     <div class="savedlist" id="savedNotes"></div>
   </div>
 </div>
@@ -2667,10 +2855,10 @@ renderPayday();restoreSession();
   <div class="life-goals-head">
     <div>
       <div class="eyebrow">THE LIFE I’M BUILDING</div>
-      <h2>Money has somewhere to go.</h2>
-      <p>Bills matter. So do the things you’re working toward.</p>
+      <h2>What are you building toward?</h2>
+      <p>Add something when it matters to you.</p>
     </div>
-    <button class="goal-add" type="button" onclick="fwAddGoal()">+ Add a goal</button>
+    <button class="goal-add" type="button" onclick="fwAddGoal()">+ Add one</button>
   </div>
 
   <div class="goal-grid" id="goalGrid"></div>
@@ -3113,7 +3301,7 @@ snap();draw();
 </script>
 <div class="overlay" id="goalEditor"><div class="sheet">
   <div class="eyebrow">New goal</div><h2>What are you working toward?</h2>
-  <div class="sub">Anything you want. You decide the name and the amount.</div>
+  <div class="sub">Name it and choose a target.</div>
   <div class="field"><label>Goal name</label><input id="goalName" placeholder="e.g. New laptop, Emergency fund"></div>
   <div class="row"><div class="field"><label>Target amount</label><input id="goalTarget" type="number" placeholder="e.g. 20000"></div></div>
   <div class="sheet-actions"><button class="primary" onclick="saveGoal()">Add goal</button><button class="secondary" type="button" onclick="document.getElementById('goalEditor').style.display='none';document.getElementById('goalEditor').setAttribute('aria-hidden','true')">Cancel</button></div>
@@ -3157,7 +3345,7 @@ function goalCard(x,i){
 }
 function drawGoals(){
   const g=document.getElementById('goalGrid');if(!g)return;
-  if(!goals.length){g.innerHTML=`<div class="goals-empty" onclick="fwAddGoal()"><div class="ghosts"><i>＋</i><i></i><i></i></div><b>Your first goal goes here</b>Pick something you’re excited about. You choose the name and the amount. It stays here until you complete or remove it.</div>`}
+  if(!goals.length){g.innerHTML=`<div class="goals-empty" onclick="fwAddGoal()"><div class="ghosts"><i>＋</i><i></i><i></i></div><b>Nothing here yet</b>Add something whenever it matters to you. It stays here until you complete or remove it.</div>`}
   else{
     const active=[],done=[];goals.forEach((x,i)=>((Number(x.saved)||0)>=Math.max(1,Number(x.target)||1)?done:active).push([x,i]));
     g.innerHTML=active.map(([x,i])=>goalCard(x,i)).join('')+
@@ -3236,7 +3424,7 @@ function drawPlanGoals(){
   if(!goals.length){
     box.innerHTML=`<div class="goal-hint">
       <strong>No goals yet.</strong>
-      <span>You don't need one to plan this payday.</span>
+      <span>You can add one whenever you're ready.</span>
     </div>
     <button type="button" class="goal-add" style="margin-top:8px" onclick="fwAddGoal()">+ Add a goal</button>`;
     return;
@@ -3251,10 +3439,7 @@ function drawPlanGoals(){
   }
 
   box.innerHTML=
-    `<div class="fw-goal-plan-intro">
-      <strong>FIRST, SEE WHAT YOU'RE BUILDING</strong>
-      <span>Your current progress stays separate from what you plan to put toward it today.</span>
-    </div>`+
+    
     active.map(o=>{
       const need=Math.max(0,(Number(o.x.target)||0)-(Number(o.x.saved)||0));
       const thisPay=Number(prior[o.i]||0);
@@ -3295,7 +3480,7 @@ window.buildSuggestion=function(){
 
   const chips=[
     ['Breathing room',breathing],
-    ['Room for You',room],
+    ['Left to Use',room],
     ['Unplanned for',available]
   ];
 
@@ -3304,12 +3489,12 @@ window.buildSuggestion=function(){
   suggestGrid.innerHTML=chips.map(x=>`<div class="suggest-chip">${x[0]}<b>${x[1]===null?'Choose if you want':P(x[1])}</b></div>`).join('');
 
   whyPlan.textContent=active.length
-    ? 'You have goals available, but I won’t decide what to put toward them for you. Choose an amount only if it feels right, and you can change it before saving.'
-    : 'You do not have a goal yet, so I will not invent one. You can add a goal if there is something you want this payday to help build — or leave that part open.';
+    ? 'Your goals are here if you want to put something toward one. You choose the amount.'
+    : 'No goal yet? That’s okay. You can plan this payday without one.';
 };
 window.useSuggestion=function(){saveInput.value=suggestion.save||0;enjoyInput.value=suggestion.enjoy||0;document.querySelectorAll('.gIn').forEach(e=>e.value=(suggestion.goals||{})[Number(e.dataset.i)]||0);updateFinal()};
 window.updateFinal=function(){const used=V('saveInput')+V('enjoyInput')+gv().reduce((a,o)=>a+o.a,0),left=remainder-used;
-  finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));stageAdvice.textContent=left<0?`This is ${P(-left)} over what is actually left. Adjust an amount until it fits.`:`${P(left)} stays flexible. The guide suggests; you decide.`};
+  finalAvailable.textContent=(left<0?'-':'')+P(Math.abs(left));stageAdvice.textContent=left<0?`That’s ${P(-left)} more than you have left. Adjust an amount.`:`${P(left)} is still yours to decide.`};
 window.confirmPlan=function(){
   const expenses=selected.reduce((s,n)=>s+(Number(values[n])||0),0),s=V('saveInput'),e=V('enjoyInput'),alloc=gv(),gt=alloc.reduce((a,o)=>a+o.a,0),avail=remainder-s-e-gt;if(avail<0)return;
   const username=(currentUser&&currentUser.username)||'user';
@@ -3447,12 +3632,12 @@ const t=document.querySelector('.fw-unlock-float');if(t)el.appendChild(t);
 <div class="fw-why-modal" id="fwWhyModal" aria-hidden="true">
   <div class="fw-why-panel">
     <div class="fw-why-label">Your Why</div>
-    <h2 id="fwWhyTitle">WHAT DO YOU WANT YOUR MONEY TO MAKE POSSIBLE?</h2>
-    <p>Tell us what matters to you. It can be a goal, more freedom, or simply enjoying your money with less worry.</p>
-    <textarea id="fwWhyInput" maxlength="240" placeholder="Example: Travel to Japan, feel more secure, buy things I enjoy, or worry less about money."></textarea>
+    <h2 id="fwWhyTitle">WHAT ARE YOU BUILDING THIS FOR?</h2>
+    <p>A few words is enough.</p>
+    <textarea id="fwWhyInput" maxlength="240" placeholder="e.g. A home, more freedom, less worry."></textarea>
     <div class="fw-why-actions">
-      <button class="fw-why-skip" id="fwWhySkip" type="button">Skip for now</button>
-      <button class="fw-why-save" id="fwWhySave" type="button">Save my why</button>
+      <button class="fw-why-skip" id="fwWhySkip" type="button">Skip</button>
+      <button class="fw-why-save" id="fwWhySave" type="button">Save</button>
     </div>
   </div>
 </div>
@@ -3475,7 +3660,7 @@ const t=document.querySelector('.fw-unlock-float');if(t)el.appendChild(t);
     const title=document.getElementById('fwWhyTitle');
     if(!modal||!input) return;
     const name=getName();
-    title.textContent = name ? `WHAT DO YOU WANT YOUR MONEY TO HELP YOU DO, ${name.toUpperCase()}?` : 'WHAT DO YOU WANT YOUR MONEY TO HELP YOU DO?';
+    title.textContent = name ? `WHAT ARE YOU BUILDING THIS FOR, ${name.toUpperCase()}?` : 'WHAT ARE YOU BUILDING THIS FOR?';
     input.value=why();
     modal.classList.add('show');
     modal.setAttribute('aria-hidden','false');
@@ -3706,7 +3891,7 @@ function makePlanCard(){
     <div class="fw-plan-line"><span>🏠 Essentials</span><span>${data.bills||'—'}</span></div>
     <div class="fw-plan-line"><span>🌱 Future You</span><span>${data.savings||'—'}</span></div>
     <div class="fw-plan-line"><span>✨ Goals</span><span>${data.goals||'—'}</span></div>
-    <div class="fw-plan-line"><span>💙 Room for You</span><span>${data.room||'—'}</span></div>
+    <div class="fw-plan-line"><span>💙 Left to Use</span><span>${data.room||'—'}</span></div>
     <p style="margin-top:25px;font-size:13px">🔒 Your money stays with you.<br>Future Wealth is a planning tool. No money was moved.</p>`;
   document.body.appendChild(card);
   return card;
