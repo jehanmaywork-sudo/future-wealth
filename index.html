@@ -2510,6 +2510,11 @@ document.addEventListener('DOMContentLoaded',function(){
 }
 </style>
 
+
+<style id="fwFieldHelp">
+.field-help{font-size:12px;line-height:1.35;opacity:.68;margin:-4px 0 7px}
+</style>
+
 </head>
 <body>
 
@@ -2618,7 +2623,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <div class="grid">
       <div class="bucket planned"><span class="icon">⌂</span><div class="amount" id="planned">₱0</div><div class="label">Needs · taking care of today</div></div>
       <div class="bucket savings"><span class="icon">◌</span><div class="amount" id="savings">₱0</div><div class="label">Keep Aside · for later</div></div>
-      <div class="bucket enjoy"><span class="icon">♡</span><div class="amount" id="enjoy">₱0</div><div class="label">Left to Use · for you</div></div>
+      <div class="bucket enjoy"><span class="icon">♡</span><div class="amount" id="enjoy">₱0</div><div class="label">For Myself · for you</div></div>
       <div class="bucket available"><span class="icon">↗</span><div class="amount" id="available">₱0</div><div class="label">Still Unplanned · flexible</div></div>
     </div>
     <div class="guide" id="guide">
@@ -2671,7 +2676,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <div id="planGoals"></div>
 
       <div class="eyebrow" style="margin-top:22px">Make room for you</div>
-      <div class="row"><div class="field"><label>Future You</label><input id="saveInput" type="number" value="0" oninput="updateFinal()"></div><div class="field"><label>Left to Use</label><input id="enjoyInput" type="number" value="0" oninput="updateFinal()"></div></div>
+      <div class="row"><div class="field"><label>Future You</label><input id="saveInput" type="number" value="0" oninput="updateFinal()"></div><div class="field"><label>For Myself</label><div class="field-help">Money you’re giving yourself permission to use this payday.</div><input id="enjoyInput" type="number" value="0" oninput="updateFinal()"></div></div>
       <div class="allocation"><span>Still Unplanned</span><b id="finalAvailable">₱0</b></div>
       <div class="notice" id="stageAdvice"></div>
       <div class="sheet-actions"><button class="primary" onclick="confirmPlan()">Save my plan →</button><button class="secondary" onclick="backToExpenses()">Back</button></div>
@@ -2792,7 +2797,7 @@ function buildSuggestion(){
 
   const chips=[
     ['Keep Aside',breathing],
-    ['☕ Left to Use',room],
+    ['☕ For Myself',room],
     ['💵 Still Unplanned',unplanned]
   ];
 
@@ -3570,7 +3575,7 @@ window.buildSuggestion=function(){
 
   const chips=[
     ['Keep Aside',keepAside],
-    ['Left to Use',leftToUse],
+    ['For Myself',leftToUse],
     ['Still Unplanned',stillUnplanned]
   ];
   active.forEach(o=>chips.push([o.x.name,null]));
@@ -4029,7 +4034,7 @@ function makePlanCard(){
     <div class="fw-plan-line"><span>🏠 Essentials</span><span>${data.bills||'—'}</span></div>
     <div class="fw-plan-line"><span>🌱 Future You</span><span>${data.savings||'—'}</span></div>
     <div class="fw-plan-line"><span>✨ Goals</span><span>${data.goals||'—'}</span></div>
-    <div class="fw-plan-line"><span>💙 Left to Use</span><span>${data.room||'—'}</span></div>
+    <div class="fw-plan-line"><span>💙 For Myself</span><span>${data.room||'—'}</span></div>
     <p style="margin-top:25px;font-size:13px">🔒 Your money stays with you.<br>Future Wealth is a planning tool. No money was moved.</p>`;
   document.body.appendChild(card);
   return card;
@@ -4867,6 +4872,21 @@ document.addEventListener('DOMContentLoaded',function(){
     window.drawGoals=function(){ const r=oldDraw.apply(this,arguments); setTimeout(renderProgressHome,20); return r; };
   }
 })();
+</script>
+
+
+<script id="fwPastPaydayRules">
+window.fwPastPaydayEdit = function(paydayLabel, oldContribution, newContribution) {
+  const oldAmount = Number(oldContribution || 0);
+  const newAmount = Number(newContribution || 0);
+  return {
+    title: 'This payday has already passed.',
+    message: 'You’re editing the plan for ' + paydayLabel + '.',
+    oldContribution: oldAmount,
+    newContribution: newAmount,
+    difference: newAmount - oldAmount
+  };
+};
 </script>
 
 </body></html>
